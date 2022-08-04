@@ -1,0 +1,44 @@
+title = "个人学习总结"
+description = "输出是最好的学习方式"
+
+base_url = "https://jimluo.github.io/"
+theme = "simple-dev-blog"
+taxonomies = [ { name = "tags" } ]
+compile_sass = true
+
+build_search_index = false
+
+generate_feed = true
+
+[markdown]
+highlight_code = true
+highlight_theme = "demain"
+
+
+[extra]
+author = "罗进"
+#dark_mode = true
+nav = [
+  { name = "Github", path = "https://github.com/jimluo" },
+]
+
+latest_text = "Check out my latest post:"
+
+icon = "icon.png"
+profile_small = "icon.png"
+profile_large = "profile.jpg"
+
+accent = "#05a081"
+accent_light = "#82d0c0"
+
+
+# footer_about = """
+# """
+
+footer_page = """
+© 2022, Jim Luo | simple-dev-blog theme on Zola
+"""
+
+not_found_message = """
+This is not the page you're looking for... return back to [safety?](/)
+"""
