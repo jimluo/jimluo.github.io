@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>个人学习总结</title>
+	<subtitle>输出是最好的学习方式</subtitle>
+	<link href="https://jimluo.github.io/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://jimluo.github.io/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2021-11-17T00:00:00+00:00</updated>
+	<id>https://jimluo.github.io/atom.xml</id>
+	<entry xml:lang="en">
+		<title>BPF技术介绍 - 生态和历史</title>
+		<published>2021-11-17T00:00:00+00:00</published>
+		<updated>2021-11-17T00:00:00+00:00</updated>
+		<link href="https://jimluo.github.io/bpf-vs-dpdk/" type="text/html"/>
+		<id>https://jimluo.github.io/bpf-vs-dpdk/</id>
+		<content type="html">&lt;h2 id=&quot;bpfji-zhu-jie-shao-sheng-tai-he-li-shi&quot;&gt;BPF技术介绍 - 生态和历史&lt;&#x2F;h2&gt;
+&lt;p&gt;本文图片都源于网上公开资料，未注明来源。内容源于对网络检测与响应NDR的开发。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;li-shi-cheng-yin&quot;&gt;历史成因&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;01history.png&quot; alt=&quot;历史成因&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图1：Linux内核的代码量增长&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;dpdk-pf-ringhe-bpfde-gong-tong-dian&quot;&gt;DPDK、PF_RING和BPF的共同点&lt;&#x2F;h3&gt;
+&lt;p&gt;分离出网络的数据平面&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;网络功能扩展的代价是牺牲性能&lt;&#x2F;li&gt;
+&lt;li&gt;都在突破内核复杂度的限制 -kernel bypass&lt;&#x2F;li&gt;
+&lt;li&gt;从内核中分离出数据平面&lt;&#x2F;li&gt;
+&lt;li&gt;向上交给用户态开发 -DPDK、PF_RING和BPF&lt;&#x2F;li&gt;
+&lt;li&gt;向下卸载到网卡执行 -BPF的XDP&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;dpdk-pf-ringhe-bpfde-chai-yi-dian-sheng-tai-mu-biao-bu-tong&quot;&gt;DPDK、PF_RING和BPF的差异点：生态目标不同&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;02canon.png&quot; alt=&quot;DPDK&quot; &#x2F;&gt; DPDK&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;DPDK 独立的平台
+&lt;ul&gt;
+&lt;li&gt;独占内核网络栈&lt;&#x2F;li&gt;
+&lt;li&gt;专用的SDK API&lt;&#x2F;li&gt;
+&lt;li&gt;生态面向硬件&lt;&#x2F;li&gt;
+&lt;li&gt;应用隔离和安全机制失效&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;PF_RING 独立的厂商
+&lt;ul&gt;
+&lt;li&gt;独立的意大利公司&lt;&#x2F;li&gt;
+&lt;li&gt;高性能版独立收费&lt;&#x2F;li&gt;
+&lt;li&gt;独立的生态&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;03swiss.png&quot; alt=&quot;BPF&quot; &#x2F;&gt; BPF&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;BPF 融合的生态
+&lt;ul&gt;
+&lt;li&gt;嫁接在内核中&lt;&#x2F;li&gt;
+&lt;li&gt;融合在已有的软硬件中&lt;&#x2F;li&gt;
+&lt;li&gt;生态面向软件并发展迅速&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;dpdkyu-bpfji-jin-hui&quot;&gt;DPDK与BPF基金会&lt;&#x2F;h3&gt;
+&lt;p&gt;面向基础设施：底层硬件 &#x2F; 上层业务&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;04foundation.png&quot; alt=&quot;基金会&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图2：两种不同利益的基金会&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;dpdknian-du-shi-jian-he-ji-zhu-biao-zhun&quot;&gt;DPDK年度事件和技术标准&lt;&#x2F;h3&gt;
+&lt;p&gt;年度事件&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;2010，Intel，Xeon 1代的DPDK&lt;&#x2F;li&gt;
+&lt;li&gt;2013，6WIND，DPDK.org社区&lt;&#x2F;li&gt;
+&lt;li&gt;2014，OvS，OvS-DPDK分布式虚拟交换机&lt;&#x2F;li&gt;
+&lt;li&gt;2015，ARM版本&lt;&#x2F;li&gt;
+&lt;li&gt;2017，加入 Linux 基金会&lt;&#x2F;li&gt;
+&lt;li&gt;2018，VMware，数据中心内软件定义基础结构&lt;&#x2F;li&gt;
+&lt;li&gt;2019，金融应用(高频交易)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;技术标准&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;PCI passthrough，绕过Hyper-V模拟，虚拟机直通PCI&lt;&#x2F;li&gt;
+&lt;li&gt;SR-IOV，绕过 Hyper-V堆栈，单网卡虚拟成多张直通网卡&lt;&#x2F;li&gt;
+&lt;li&gt;FD.io&#x2F;VPP，矢量加速数据IO，减少I-cache抖动和读延时&lt;&#x2F;li&gt;
+&lt;li&gt;vDPA， virtio 数据路径加速，控制面软件模拟，数据面硬件实现&lt;&#x2F;li&gt;
+&lt;li&gt;Switchdev，卸载内核的交换功能到硬件&lt;&#x2F;li&gt;
+&lt;li&gt;代码贡献占比 (V21.11)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;bpfxun-su-fa-zhan-de-sheng-tai&quot;&gt;BPF迅速发展的生态&lt;&#x2F;h2&gt;
+&lt;p&gt;年度技术&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;1992 论文，BSD Packet Filter&lt;&#x2F;li&gt;
+&lt;li&gt;1994 cBPF，tcpdump中libpcap的实现&lt;&#x2F;li&gt;
+&lt;li&gt;2014 eBPF，通用虚拟机&lt;&#x2F;li&gt;
+&lt;li&gt;2015 BCC，开发工具和库&lt;&#x2F;li&gt;
+&lt;li&gt;2016 XDP，网络内核旁路模块&lt;&#x2F;li&gt;
+&lt;li&gt;2017 libbpf，脱离内核独立发展&lt;&#x2F;li&gt;
+&lt;li&gt;2017 ARM&#x2F;MIPS，多平台BPF&lt;&#x2F;li&gt;
+&lt;li&gt;2018 BTF，跨内核版本类型格式&lt;&#x2F;li&gt;
+&lt;li&gt;2019 尾调用和热更新&lt;&#x2F;li&gt;
+&lt;li&gt;2020 LSM和TCP拥塞控制&lt;&#x2F;li&gt;
+&lt;li&gt;2021 eBPF基金会&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;产品生态&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;2017 Facebook，生产环境中的负载均衡Katran&lt;&#x2F;li&gt;
+&lt;li&gt;2018 Cloudflare，生产环境中的DDoS&#x2F;防火墙等&lt;&#x2F;li&gt;
+&lt;li&gt;2018 Android 9，流量监控，包括DHCPClient&lt;&#x2F;li&gt;
+&lt;li&gt;2018 Netronome，Agilio智能网卡支持XDP&lt;&#x2F;li&gt;
+&lt;li&gt;2018 DPDK，支持BPF(不包括MAP和尾调用)&lt;&#x2F;li&gt;
+&lt;li&gt;2019 Google，KRSI 内核运行时安全助手(Kernel V5.7)&lt;&#x2F;li&gt;
+&lt;li&gt;2019 Sysdig，Falco捐赠为k8s安全基础&lt;&#x2F;li&gt;
+&lt;li&gt;2020 Nvidia，Mellanox智能网卡支持XDP(￥3千~9千)&lt;&#x2F;li&gt;
+&lt;li&gt;2020 微软，Linux版Sysmon，eBPF for Windows&lt;&#x2F;li&gt;
+&lt;li&gt;2020 字节，高性能网络 ACL&lt;&#x2F;li&gt;
+&lt;li&gt;2020 阿里云，基于Cilium加速和扩展&lt;&#x2F;li&gt;
+&lt;li&gt;2021 Cilium，Service mesh (无Sidecar)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;dpdkyu-bpfsheng-tai&quot;&gt;DPDK与BPF生态&lt;&#x2F;h3&gt;
+&lt;p&gt;面向生态和开发者不同&lt;&#x2F;p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;产品分类&lt;&#x2F;th&gt;&lt;th&gt;DPDK&lt;&#x2F;th&gt;&lt;th&gt;BPF&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;安全&lt;&#x2F;td&gt;&lt;td&gt;&lt;&#x2F;td&gt;&lt;td&gt;Falco&#x2F;Cilium&#x2F;L4drop&#x2F;...&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;可观测性&lt;&#x2F;td&gt;&lt;td&gt;&lt;&#x2F;td&gt;&lt;td&gt;Hubble&#x2F;L3AF&#x2F;Tracee&#x2F;...&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;网络&lt;&#x2F;td&gt;&lt;td&gt;DPVS&#x2F;OVS&#x2F;FD.IO&#x2F;VPP&lt;&#x2F;td&gt;&lt;td&gt;Katran&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;SDKs&lt;&#x2F;td&gt;&lt;td&gt;C++&#x2F;GO&lt;&#x2F;td&gt;&lt;td&gt;C++&#x2F;Rust&#x2F;GO&#x2F;Python&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;内核&lt;&#x2F;td&gt;&lt;td&gt;TCP栈 F-Stack&#x2F;mTCP&lt;&#x2F;td&gt;&lt;td&gt;helper-API&#x2F;Maps&#x2F;Verfier&amp;amp;JIT&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;市场生态&lt;&#x2F;td&gt;&lt;td&gt;关注硬件能力的虚拟化和共享，硬件厂商推动，是虚拟化技术vt-x&#x2F;ept等在网络IO上的演进&lt;&#x2F;td&gt;&lt;td&gt;关注内核能力的分离和复用云厂商推动，是云原生技术演进对本地生态的融合&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;p&gt;表1：两种不同利益的基金会&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bpfji-zhu-jie-shao-xing-neng-fen-xi&quot;&gt;BPF技术介绍 性能分析&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;dpdkyu-pf-ringji-zhu-yi-tong-ji-zhu-xiang-jin&quot;&gt;DPDK与PF_RING技术异同  - 技术相近&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;05pf_ring.png&quot; alt=&quot;PF_RING&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图3：PF_RING原理&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;06dpdk.png&quot; alt=&quot;DPDK&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图4：DPDK模块结构&lt;&#x2F;p&gt;
+&lt;p&gt;相同&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;UIO+PMD主动轮询 减少中断和CPU上下文切换&lt;&#x2F;li&gt;
+&lt;li&gt;UIO+mmap 实现零拷贝&lt;&#x2F;li&gt;
+&lt;li&gt;HugePages 减少TLB 失效&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;差异&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;PF_RING 分普通版和ZC(zero copy)高性能版本&lt;&#x2F;li&gt;
+&lt;li&gt;ZC许可证收费，DPDK 免费&lt;&#x2F;li&gt;
+&lt;li&gt;ZC与DPDK的性能基本持平&lt;&#x2F;li&gt;
+&lt;li&gt;ZC应用层API易于使用，开发难度远小于DPDK&lt;&#x2F;li&gt;
+&lt;li&gt;ZC是意大利ntop公司下的一款产品，生态小&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;bpfde-wang-luo-ji-zhu-te-dian&quot;&gt;BPF的网络技术特点&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;08BPF-hook.png&quot; alt=&quot;BPF模块结构&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图5：BPF模块结构&lt;&#x2F;p&gt;
+&lt;p&gt;BPF的7种挂载点，覆盖全生命周期流程&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;uprobe&lt;&#x2F;li&gt;
+&lt;li&gt;syscall&lt;&#x2F;li&gt;
+&lt;li&gt;sockmap&#x2F;sockops&lt;&#x2F;li&gt;
+&lt;li&gt;kprobe&lt;&#x2F;li&gt;
+&lt;li&gt;cgroups&lt;&#x2F;li&gt;
+&lt;li&gt;tc&lt;&#x2F;li&gt;
+&lt;li&gt;xdp&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;07xdp-pkt.png&quot; alt=&quot;XDP程序的4种包处理方式&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图6：BPF的XDP程序的4种包处理方式&lt;&#x2F;p&gt;
+&lt;p&gt;XDP的4种包处理方式&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;PASS 放行到kernel &lt;&#x2F;li&gt;
+&lt;li&gt;DROP 丢弃，不到kernel&lt;&#x2F;li&gt;
+&lt;li&gt;REDIRECT 转发其他处理&lt;&#x2F;li&gt;
+&lt;li&gt;TX 原路返回(用于阻断和重定向)&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h3 id=&quot;xdpde-xie-zai-wang-qia-xing-neng&quot;&gt;XDP的卸载网卡性能&lt;&#x2F;h3&gt;
+&lt;p&gt;Netronome智能网卡数据&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;XDP 3个hook点(网卡Offload&#x2F;内核前Native&#x2F;内核中Generic)&lt;&#x2F;li&gt;
+&lt;li&gt;Offload 1 core比Native 8 core快近似1&#x2F;3倍&lt;&#x2F;li&gt;
+&lt;li&gt;Native下比DPDK稍慢，性能相差不多 Stackoverflow  Redhat&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;09netonome-lb.png&quot; alt=&quot;XDP的3种挂载模式的性能&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图7：XDP的3种挂载模式的性能&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;10netonome-layers.png&quot; alt=&quot;XDP在网络协议栈的位置&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图8：XDP在网络协议栈的位置&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;nacya-ce-ji-lu&quot;&gt;NAC压测记录&lt;&#x2F;h3&gt;
+&lt;p&gt;3种类型的吞吐率,NAC WSL2虚拟机&lt;&#x2F;p&gt;
+&lt;p&gt;XDP_DROP 直接丢弃&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#f9f9f9;color:#111111;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;❯&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; tcpreplay&lt;&#x2F;span&gt;&lt;span style=&quot;color:#f07219;&quot;&gt; -t -i&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; lo t.pcap&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Actual:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 56320 packets (46419288 bytes&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;sent&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; in 1.10 seconds&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Rated:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 42062496.6 Bps, 336.49 Mbps, 51033.95 pps&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Flows:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 1091 flows, 988.60 fps, 56290 flow packets, 30 non-flow&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;XDP_TX 阻断、重定向&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#f9f9f9;color:#111111;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Actual:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 56320 packets (46419288 bytes&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;sent&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; in 1.30 seconds&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Rated:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 35446666.1 Bps, 283.57 Mbps, 43007.04 pps&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Flows:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 1091 flows, 833.10 fps, 56290 flow packets, 30 non-flow&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;XDP_TX + map_perf 阻断并上报应用&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#f9f9f9;color:#111111;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Actual:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 56320 packets (46419288 bytes&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;sent&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; in 1.49 seconds&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Rated:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 31016641.1 Bps, 248.13 Mbps, 37632.14 pps&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Flows:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 1091 flows, 728.98 fps, 56290 flow packets, 30 non-flow&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;竞品 10个千兆电口,每秒事务数1000TPS，最大吞吐量500Mbps，最大并发连接数:1000(条)&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;bpfji-zhu-jie-shao-an-li-fen-xi&quot;&gt;BPF技术介绍 - 案例分析&lt;&#x2F;h3&gt;
+&lt;p&gt;实际案例 cloudflare DDOS 
+Mirai僵尸网络的3次攻击&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;11ddos-miral.png&quot; alt=&quot;DDOS时网络承载的流量&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图9：DDOS时网络承载的流量&lt;&#x2F;p&gt;
+&lt;p&gt;2020.07， 654Gbps， SYN 洪水和UDP 洪水 
+2021.08 ，1.2Tbps， SYN 洪水和UDP 洪水，最大HTTP请求2500万次&#x2F;s , 3 秒内被阻止
+2021.11， 2Tbps， 1分钟的DNS 放大攻击和 UDP 洪水，1.5 万个僵尸 （下图）
+近2Tbps&lt;&#x2F;p&gt;
+&lt;p&gt;DDOS缓解流程 
+生态链：全BPF系列产品集成&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;12ddos-xdp.png&quot; alt=&quot;缓解DDOS时使用XDP的工具链&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图10：缓解DDOS时使用XDP的工具链&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;接收样本分析到攻击时自动推送缓解策略&lt;&#x2F;li&gt;
+&lt;li&gt;再在每台服务器上执行本地缓解策略,&lt;&#x2F;li&gt;
+&lt;li&gt;DDos的L4Drop (XDP)&lt;&#x2F;li&gt;
+&lt;li&gt;LB的Unimog     (XDP) &lt;&#x2F;li&gt;
+&lt;li&gt;防火墙的Magic firewall (BPF xt_btf)&lt;&#x2F;li&gt;
+&lt;li&gt;分发和监视&lt;&#x2F;li&gt;
+&lt;li&gt;UDP限速 (BPF SO_ATTACH_BPF)&lt;&#x2F;li&gt;
+&lt;li&gt;上报指标的ebpf_exporter&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;13ddos-bpf.png&quot; alt=&quot;缓解DDOS时使用XDP的协议找技术&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图11：缓解DDOS时使用XDP的协议找技术&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;p0fzhi-wen-ku-shuo-ming-tcp-headerte-zheng&quot;&gt;p0f指纹库说明 TCP header特征&lt;&#x2F;h3&gt;
+&lt;p&gt;DDOS流量指纹识别 &lt;&#x2F;p&gt;
+&lt;p&gt;指纹类型&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#f9f9f9;color:#111111;&quot;&gt;&lt;code&gt;&lt;span&gt;Windows XP: 4:120+8:0:1452:65535,0   :mss,nop,nop,sok   :df,id+:0&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Windows 7:  4:128:0:*     :8192,8    :mss,nop,ws,nop,sok:df,id+:0&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Windows 11: 4:128+0:0:1460:mss*44,8  :mss,nop,ws,nop,sok:df,id+:0&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;ubuntu 14:  4:64   :0     :*:mss*10,6:mss,sok,ts,nop,ws :df,id+:0&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;TCP指纹 判断依据，Linux的TTL为64，Win是128，flags的数量和位置，Linux与Win不同&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#f9f9f9;color:#111111;&quot;&gt;&lt;code&gt;&lt;span&gt;4: IP version &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  64: TTL   &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;     0: IP options length&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;       *: MSS maximum segment size&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;         mss*10,6: TCP window size and scale&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  mss,sok,ts,nop,ws: TCP Options(sok:selective ACK permitted)&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                                 df,id+: quirks(df: don&amp;#39;t fragment)&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                                        0 TCP Payload Length&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;fu-zai-jun-heng-zhong-de-liu-liang-biao-shi&quot;&gt;负载均衡中的流量标识&lt;&#x2F;h3&gt;
+&lt;p&gt;Facebook katran TCP option添加自定义ID&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;14katran.png&quot; alt=&quot;负载均衡时XDP在L4层与其他服务间的关系&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图12：负载均衡时XDP在L4层与其他服务间的关系&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;通过将server_id加在TCP头中实现无状态路由机制&lt;&#x2F;li&gt;
+&lt;li&gt;处理TCP头额外开销(CPU&#x2F;memory)非常小&lt;&#x2F;li&gt;
+&lt;li&gt;根据server_id使用Maglev Hash变种选择后端&lt;&#x2F;li&gt;
+&lt;li&gt;只适用于无防火墙的内网&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;拦截事件点读写server_id&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;15katran-serverid.png&quot; alt=&quot;XDP在L4层负载均衡时用到的事件&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图13：XDP在L4层负载均衡时用到的事件&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;ke-guan-ce-xing-diao-shi&quot;&gt;可观测性 调试&lt;&#x2F;h3&gt;
+&lt;p&gt;cilium pwru (packet, where are you?)&lt;&#x2F;p&gt;
+&lt;p&gt;跟踪内核中的网络包的API调用&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;bpfji-zhu-jie-shao-ji-zhu-fen-xi&quot;&gt;BPF技术介绍 - 技术分析&lt;&#x2F;h3&gt;
+&lt;p&gt;BPF开发运行机制&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;16bpf-flow.png&quot; alt=&quot;BPF生命周期流程&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图14：BPF生命周期流程(网络的XDP和TC)&lt;&#x2F;p&gt;
+&lt;p&gt;1.编写、编译
+2.校验
+3.BPF字节码到机器码
+4.挂载执行
+6.与系统通信
+5.XDP的DROP&#x2F;PASS&#x2F;TX&#x2F;REDIRECT&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;cbpfxu-ni-ji-yuan-li&quot;&gt;cBPF虚拟机原理&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;17bpf-model1.png&quot; alt=&quot;代码在编译器的分解&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图15：代码在编译器的分解&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;18bpf-model2.png&quot; alt=&quot;BPF转换成DAG&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图16：BPF转换成DAG&lt;&#x2F;p&gt;
+&lt;p&gt;BPF 基于寄存器虚拟机，程序最终转换成一个DAG，并由内核来执行
+过滤器表达式在两种模式下的编译分解，见下图
+模型1: 制约性能最大的问题，有重复计算
+模型2: 等价于模型1，只需6次布尔运算，遍历完整棵树
+模型2 eBPF
+模型1 cBPF&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;cbpfxu-ni-ji-zhi-xing-liu-cheng&quot;&gt;cBPF虚拟机执行流程&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;19bpf-asm1.png&quot; alt=&quot;BPF内部执行流程&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图17：BPF内部执行流程&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;bpf-xdp&#x2F;20bpf-asm2.png&quot; alt=&quot;BPF指令码解释&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;图18：BPF指令码解释&lt;&#x2F;p&gt;
+&lt;p&gt;$ tcpdump tcp port 443 -d&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;bpfxian-you-wen-ti&quot;&gt;BPF现有问题&lt;&#x2F;h3&gt;
+&lt;p&gt;内核版本和安全&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;内核版本支持 Linux &amp;gt; V4.18&lt;&#x2F;li&gt;
+&lt;li&gt;XDP及其MAP的支持&lt;&#x2F;li&gt;
+&lt;li&gt;BTF跨不同版本内核运行&lt;&#x2F;li&gt;
+&lt;li&gt;安全 提权漏洞 Linux V5.7~V5.8&lt;&#x2F;li&gt;
+&lt;li&gt;CVE-2020-27194：Verify时越界读写造成&lt;&#x2F;li&gt;
+&lt;li&gt;CVE-2020-8835：Verify时常数变量取值范围的逻辑错误&lt;&#x2F;li&gt;
+&lt;li&gt;CVE-2020-27194：Verify时寄存器边界跟踪&lt;&#x2F;li&gt;
+&lt;li&gt;容器逃逸: 编写Rootkit，修改用户空间，hook网络数据&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+	</entry>
+</feed>

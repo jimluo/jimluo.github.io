@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jimluo.github.io/sitemap.xml
