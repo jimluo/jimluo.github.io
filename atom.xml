@@ -5,8 +5,71 @@
 	<link href="https://jimluo.github.io/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://jimluo.github.io/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2021-11-17T00:00:00+00:00</updated>
+	<updated>2021-12-03T00:00:00+00:00</updated>
 	<id>https://jimluo.github.io/atom.xml</id>
+	<entry xml:lang="en">
+		<title>开发minidhcp的感受记录</title>
+		<published>2021-12-03T00:00:00+00:00</published>
+		<updated>2021-12-03T00:00:00+00:00</updated>
+		<link href="https://jimluo.github.io/minidhcp/" type="text/html"/>
+		<id>https://jimluo.github.io/minidhcp/</id>
+		<content type="html">&lt;h2 id=&quot;kai-fa-minidhcpde-gan-shou-ji-lu&quot;&gt;开发minidhcp的感受记录&lt;&#x2F;h2&gt;
+&lt;p&gt;开发此服务目的是为网络流量分析和控制提供一种支持手段。具体方法是增加基于角色分配IP段的dhcp，并记录分配的设备的信息。&lt;&#x2F;p&gt;
+&lt;p&gt;为了快速验证，在github上找到了&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;coredhcp&#x2F;coredhcp&quot;&gt;coredhcp&lt;&#x2F;a&gt;，去掉了dhcp6及其繁冗的插件系统，优化重构了网络收发部分代码，重写了option的分配，加入了基于角色分配IP的功能，角色策略通过配置文件生效。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;dhcpxie-yi-liu-cheng&quot;&gt;dhcp协议流程&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;minidhcp.png&quot; alt=&quot;dhcp协议流程&quot; &#x2F;&gt;&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#1&quot;&gt;1&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;dhcp-lease-sheng-ming-zhou-qi&quot;&gt;DHCP lease 生命周期&lt;&#x2F;h3&gt;
+&lt;p&gt;流程类似打工人租房，先电线杆子广播需求，收到房源电话后签合约，住到期后再续租。&lt;&#x2F;p&gt;
+&lt;p&gt;在DHCP协议里描述的更严谨，用编程语言描述就是会有多个if else。&lt;&#x2F;p&gt;
+&lt;p&gt;在计算机网络里会是一来一回的消息请求和确认。&lt;&#x2F;p&gt;
+&lt;p&gt;类似盲人摸象，不同的视角说的都不全面。&lt;&#x2F;p&gt;
+&lt;p&gt;用语言描述如下：&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;此前没有过IP的客户端全网广播向DHCP服务申请，通过后分配一个IP时间限制的租约&lt;&#x2F;li&gt;
+&lt;li&gt;已有过IP的客户端向授予它租约的DHCP服务器联系，以确认为其重新分配租约&lt;&#x2F;li&gt;
+&lt;li&gt;租约过期后，客户端将联系最初授予租约的服务器续租&lt;&#x2F;li&gt;
+&lt;li&gt;如果续租失败，客户端将尝试重新绑定到任何活跃的DHCP服务器&lt;&#x2F;li&gt;
+&lt;li&gt;客户端主动放弃租约下线(goodbye curel world😢)&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;以上5步在DHCP服务认知的世界里，用Allocation、Reallocation、Renewal、Rebinding和Release来描述。&lt;&#x2F;p&gt;
+&lt;p&gt;当然在租房客的认知世界里，憧憬未来和负重前行也与房东的5步相对应。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;xian-shuo-xie-yi-de-allocation-da-jia-gong-tong-zun-shou-tong-yang-de-yue-ding&quot;&gt;先说协议的Allocation，大家共同遵守同样的约定&lt;&#x2F;h3&gt;
+&lt;ol&gt;
+&lt;li&gt;client --DISCOVER(myMac, myID)--&amp;gt; servers&lt;&#x2F;li&gt;
+&lt;li&gt;client &amp;lt;--OFFER(yourIP, your[DNS,Router,Mask,...], yourID)-- servers&lt;&#x2F;li&gt;
+&lt;li&gt;client &amp;lt;--IP[x]-- [1, n]IP from OFFER list &lt;&#x2F;li&gt;
+&lt;li&gt;client --REQUEST(IP[x])--&amp;gt; servers&lt;&#x2F;li&gt;
+&lt;li&gt;client &amp;lt;--ACK&#x2F;MAK-- server&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;用语言描述为&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;广播找房&lt;&#x2F;li&gt;
+&lt;li&gt;广受青睐，发来房源信息&lt;&#x2F;li&gt;
+&lt;li&gt;挑选1个高性价比的房&lt;&#x2F;li&gt;
+&lt;li&gt;广播告知自己已是有房之人&lt;&#x2F;li&gt;
+&lt;li&gt;房东送来租房合同等你签字&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;色不异空，空不异色，Reallocation、Renewal、Rebinding亦复如是&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;serverwang-luo-shou-fa-xi-jie&quot;&gt;server网络收发细节&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;服务端监听在67端口上，收到client请求后解析有icmp的信息，响应给client容错时要处理下，里面有网卡接口可以使用&lt;&#x2F;li&gt;
+&lt;li&gt;对普通请求，响应原路2层ethernet返回。其他非正常消息在3层ip上icmp返回错误提醒&lt;&#x2F;li&gt;
+&lt;li&gt;具体的发送使用libpacp，发送前要去掉自定义链路层的协议头部&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;optionschong-xi-jie&quot;&gt;options种细节&lt;&#x2F;h2&gt;
+&lt;p&gt;DHCP通过自定义增加多种不同的可选项来扩展，服务端返给客户端的option里有[ip, dns, mask, router, serverID...]可自由添加。&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;分配时先根据客户端的mac来识别其角色，再根据配置文件中的range来分配具体的ip等信息&lt;&#x2F;li&gt;
+&lt;li&gt;其他扩展在options的HandlerXXX dispatch去即可&lt;&#x2F;li&gt;
+&lt;li&gt;需要客户端信息的，再options里可以对其提出，比如Vendor信息等&lt;&#x2F;li&gt;
+&lt;li&gt;续租等信息在lease.txt可查可用&lt;&#x2F;li&gt;
+&lt;li&gt;分配算法用的coredhcp的bitmap方式降低内存占用&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;div class=&quot;footnote-definition&quot; id=&quot;1&quot;&gt;&lt;sup class=&quot;footnote-definition-label&quot;&gt;1&lt;&#x2F;sup&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;support.huawei.com&#x2F;enterprise&#x2F;zh&#x2F;doc&#x2F;EDOC1100156651&#x2F;bb57bdaa&#x2F;how-dhcp-works&quot;&gt;图片来源&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;div&gt;
+</content>
+	</entry>
 	<entry xml:lang="en">
 		<title>BPF技术介绍 - 生态和历史</title>
 		<published>2021-11-17T00:00:00+00:00</published>
