@@ -107,19 +107,19 @@
   <div class="post-preview">
     <h3 class="post-title"><a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;minidhcp&#x2F;">开发minidhcp的感受记录</a></h3>
     <small>
-      December 03, 2021 - 850 words - 5 mins
+      December 03, 2021 - 860 words - 5 mins
     </small>
     <div class="summary">
       
         开发minidhcp的感受记录
 开发此服务目的是为网络流量分析和控制提供一种支持手段。具体方法是增加基于角色分配IP段的dhcp，并记录分配的设备的信息。
-为了快速验证，在github上找到了coredhcp，去掉了dhcp6及其繁冗的插件系统，优化重构了网络收发部分代码，重写了option的分配，加入了基于角色分配IP的功能，角色策略通过配置文件生效。
+为了快速验证，在github上找到了coredhcp，去掉了dhcp6及其繁冗的插件系统，优化重构了网络收发部分代码，重写了option的分配，加入了基于角色分配IP的功能，角色策略通过配置文件生效。1
 dhcp协议流程
-1
+2
 DHCP lease 生命周期
 流程类似打工人租房，先电线杆子广播需求，收到房源电话后签合约，住到期后再续租。
 在DHCP协议里描述的更严谨，用编程语言描述就是会有多个if else。
-在计算机网络里会是一来一回的消息请…
+在计算机网络里会是一来一回的消息…
       <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;minidhcp&#x2F;">read more</a>
     </div>
   </div>

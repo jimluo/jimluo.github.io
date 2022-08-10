@@ -15,9 +15,9 @@
 		<id>https://jimluo.github.io/minidhcp/</id>
 		<content type="html">&lt;h2 id=&quot;kai-fa-minidhcpde-gan-shou-ji-lu&quot;&gt;开发minidhcp的感受记录&lt;&#x2F;h2&gt;
 &lt;p&gt;开发此服务目的是为网络流量分析和控制提供一种支持手段。具体方法是增加基于角色分配IP段的dhcp，并记录分配的设备的信息。&lt;&#x2F;p&gt;
-&lt;p&gt;为了快速验证，在github上找到了&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;coredhcp&#x2F;coredhcp&quot;&gt;coredhcp&lt;&#x2F;a&gt;，去掉了dhcp6及其繁冗的插件系统，优化重构了网络收发部分代码，重写了option的分配，加入了基于角色分配IP的功能，角色策略通过配置文件生效。&lt;&#x2F;p&gt;
+&lt;p&gt;为了快速验证，在github上找到了&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;coredhcp&#x2F;coredhcp&quot;&gt;coredhcp&lt;&#x2F;a&gt;，去掉了dhcp6及其繁冗的插件系统，优化重构了网络收发部分代码，重写了option的分配，加入了基于角色分配IP的功能，角色策略通过配置文件生效。&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#1&quot;&gt;1&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt;&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;dhcpxie-yi-liu-cheng&quot;&gt;dhcp协议流程&lt;&#x2F;h2&gt;
-&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;minidhcp.png&quot; alt=&quot;dhcp协议流程&quot; &#x2F;&gt;&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#1&quot;&gt;1&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;minidhcp.png&quot; alt=&quot;dhcp协议流程&quot; &#x2F;&gt;&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#2&quot;&gt;2&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt;&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;dhcp-lease-sheng-ming-zhou-qi&quot;&gt;DHCP lease 生命周期&lt;&#x2F;h3&gt;
 &lt;p&gt;流程类似打工人租房，先电线杆子广播需求，收到房源电话后签合约，住到期后再续租。&lt;&#x2F;p&gt;
 &lt;p&gt;在DHCP协议里描述的更严谨，用编程语言描述就是会有多个if else。&lt;&#x2F;p&gt;
@@ -66,7 +66,8 @@
 &lt;li&gt;分配算法用的coredhcp的bitmap方式降低内存占用&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 &lt;div class=&quot;footnote-definition&quot; id=&quot;1&quot;&gt;&lt;sup class=&quot;footnote-definition-label&quot;&gt;1&lt;&#x2F;sup&gt;
-&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;support.huawei.com&#x2F;enterprise&#x2F;zh&#x2F;doc&#x2F;EDOC1100156651&#x2F;bb57bdaa&#x2F;how-dhcp-works&quot;&gt;图片来源&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;jimluo&#x2F;minidhcp&quot;&gt;源码地址&lt;&#x2F;a&gt;
+&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#2&quot;&gt;2&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt;: &lt;a href=&quot;https:&#x2F;&#x2F;support.huawei.com&#x2F;enterprise&#x2F;zh&#x2F;doc&#x2F;EDOC1100156651&#x2F;bb57bdaa&#x2F;how-dhcp-works&quot;&gt;图片来源&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;&#x2F;div&gt;
 </content>
 	</entry>
