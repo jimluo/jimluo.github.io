@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+
+    <style>
+      :root {
+        --accent-color: #05a081;
+        --accent-color-light: #82d0c0;
+        --accent-overlay-color: #fff;
+        --body-bg: #fff;
+        --body-color: #000;
+        --heading-color: #000;
+        --table-bg-even: #f3f3f3;
+        --table-border-bottom: #dddddd;
+      }
+      
+    </style>
+
+    <meta name="theme-color" content="#05a081" />
+
+    
+      <link rel="icon" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;106e1fb7d8c11fe100.png" />
+      <link rel="apple-touch-icon" sizes="48x48" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;106e1fb7d8c11fe100.png" />
+      <link rel="apple-touch-icon" sizes="72x72" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;38c5aeca4d24ddfe00.png" />
+      <link rel="apple-touch-icon" sizes="96x96" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;74cf6cb0a69d143300.png" />
+      <link rel="apple-touch-icon" sizes="144x144" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;b7f9a884e270881000.png" />
+      <link rel="apple-touch-icon" sizes="192x192" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;67ecf87962747c1700.png" />
+      <link rel="apple-touch-icon" sizes="256x256" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;73ad5705c9d7c81300.png" />
+      <link rel="apple-touch-icon" sizes="384x384" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;1c22f6dd0a34f84400.png" />
+      <link rel="apple-touch-icon" sizes="512x512" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;f9196920c2e9808000.png" />
+      
+    
+
+    
+
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary">
+
+    
+
+    
+
+    
+      
+        <meta name="description" content="输出是最好的学习方式" />
+        <meta name="twitter:description" content="输出是最好的学习方式">
+      
+    
+
+    
+      <meta name="twitter:title" content="基于Rust和BPF技术的网络TCP水印">
+    
+
+    
+      <link rel="prerender" href="https:&#x2F;&#x2F;github.com&#x2F;jimluo" />
+    
+
+    <link rel="prefetch" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;2abb4f8ff69df78500.png" />
+
+    <title>
+      
+        
+          基于Rust和BPF技术的网络TCP水印
+        
+      
+    </title>
+
+    
+    
+      <link rel="stylesheet" href="https://jimluo.github.io/main.css">
+    
+    
+  
+    <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;https-redirect&#x2F;">
+  
+
+  
+
+  
+    <link rel="prerender"  href="https://jimluo.github.io/tags/linux/">
+  
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://google.com/article"
+      },
+      "headline": "基于Rust和BPF技术的网络TCP水印",
+      "image": [],
+      "datePublished": "2022-03-23T00:00:00+00:00",
+      "dateModified": "2022-03-23T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "罗进"
+      },
+       "publisher": {
+        "@type": "Organization",
+        "name": "罗进",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://jimluo.github.io/icon.png"
+        }
+        
+      }
+      
+    }
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        
+
+        
+        {
+          
+          "@type": "ListItem",
+          "position": 1,
+          "name": "",
+          "item": "https://jimluo.github.io/"
+        },
+        
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "基于Rust和BPF技术的网络TCP水印",
+          "item": "https://jimluo.github.io/net-token/"
+        }
+      ]
+    }
+  </script>
+
+  </head>
+  <body>
+    
+      <header>
+        <a class="profile-icon" href="/">
+          <img src="https:&#x2F;&#x2F;jimluo.github.io&#x2F;processed_images&#x2F;2abb4f8ff69df78500.png" alt="profile picture">
+        </a>
+        <nav>
+          
+            <a href="https:&#x2F;&#x2F;github.com&#x2F;jimluo">Github</a>
+          
+        </nav>
+      </header>
+    
+    <main>
+    
+  <div class="post-title">
+    <h1>基于Rust和BPF技术的网络TCP水印</h1>
+    <small>
+      March 23, 2022
+      
+        - 
+        <span class="tags">
+          
+            <a href="https://jimluo.github.io/tags/linux/">Linux</a>
+          
+        </span>
+      
+    </small>
+  </div>
+
+  <div>
+    <p>网络水印用于防DDoS攻击和网络流量等安全领域，原理是给报文增加特征信息，基于TCP options的增加字段不会被防火墙等修改去除，本文正是使用BPF和Rust来达到高效的实现的具体描述。<sup class="footnote-reference"><a href="#1">1</a></sup> 源码参见[]
+<strong>保护知识产权的图片水印不在此列</strong></p>
+<ul>
+<li>BPF驱动使用c开发</li>
+<li>用户态的配置和加载器使用rust和libbpf-rs加速开发</li>
+</ul>
+<h2 id="yi-lai-feng-zhuang-guan-xi">依赖封装关系</h2>
+<p><img src="../images/net-token/libbpf-rs-dependency.png" alt="用户态关系图" /></p>
+<p>基于libbpf-rs开发, libbpf-rs提供用于开发的API抽象，包括驱动object和其静态程序、通讯、挂载上程序的资源抽象</p>
+<p>同时libbpf-sys封装了unsafe的libbpf和libelf、zlib，其中核心是基于内核的一部分libbpf，c开发的静态链接库。细节稠密的api，也加载并解析驱动elf文件使用的动态链接的libelf和zlib</p>
+<p>基于libbpf-cargo脚手架生成工程目录，build命令调用gen和make完成</p>
+<h2 id="gong-cheng-mu-lu-jie-gou">工程目录结构</h2>
+<p>由libbpf-cargo自动生成的骨架目录的代码</p>
+<pre data-lang="sh" style="background-color:#f9f9f9;color:#111111;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#c82728;">netoken\</span><span>
+</span><span>  </span><span style="color:#c82728;">src\</span><span>
+</span><span>    </span><span style="color:#c82728;">bpf</span><span style="color:#f07219;">\ </span><span style="color:#4271ae;">                 //驱动</span><span>
+</span><span>      </span><span style="color:#c82728;">.output</span><span style="color:#f07219;">\ </span><span style="color:#4271ae;">           //脚手架自动生成</span><span>
+</span><span>        </span><span style="color:#c82728;">netoken.skel.rs</span><span style="color:#4271ae;">  //=</span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;">libbpf_rs</span><span>
+</span><span>      </span><span style="color:#c82728;">netoken.c</span><span style="color:#4271ae;">              ^</span><span>
+</span><span>      </span><span style="color:#c82728;">vmlinux.h               </span><span style="color:#3e999f;">|</span><span>
+</span><span>    </span><span style="color:#c82728;">main.rs</span><span style="color:#4271ae;">  //=</span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;">libbpf_rs    </span><span style="color:#3e999f;">|</span><span>
+</span><span style="color:#c82728;">build.rs</span><span style="color:#4271ae;">     //=</span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;">libbpf_cargo-+</span><span>
+</span><span style="color:#c82728;">Cargo.toml</span><span>
+</span><span style="color:#c82728;">libbpf-rs\</span><span>
+</span><span>  </span><span style="color:#c82728;">.git</span><span>
+</span><span>  </span><span style="color:#c82728;">libbpf-rs\</span><span>
+</span><span>  </span><span style="color:#c82728;">libbpf-cargo\</span><span>
+</span></code></pre>
+<p>Cargo.toml中可配置依赖libbpf-xxx的具体位置</p>
+<pre data-lang="toml" style="background-color:#f9f9f9;color:#111111;" class="language-toml "><code class="language-toml" data-lang="toml"><span>[</span><span style="color:#c82728;">dependencies</span><span>]</span><span>
+</span><span style="color:#c82728;">libbpf-rs </span><span>= { </span><span style="color:#c82728;">path </span><span>= </span><span style="color:#839c00;">&quot;../libbpf-rs/libbpf-rs&quot; </span><span>}</span><span>
+</span><span>[</span><span style="color:#c82728;">build-dependencies</span><span>]</span><span>
+</span><span style="color:#c82728;">libbpf-cargo </span><span>= { </span><span style="color:#c82728;">path </span><span>= </span><span style="color:#839c00;">&quot;../libbpf-rs/libbpf-cargo&quot; </span><span>}</span><span>
+</span></code></pre>
+<h2 id="gu-jia-dai-ma-sheng-cheng-liu-cheng">骨架代码生成流程</h2>
+<ol>
+<li>用户工程 build.rs-&gt;libbpf-cargo.rs SkeletonBuilder() <em>.bpf.c =&gt; .output/</em>.skel.rs</li>
+<li>用户工程生成的*.skel.rs流程: 
+<ol>
+<li>obj: DATA [u8]</li>
+<li><em>SkelBuilder()-&gt;Open</em>Skel()-&gt;*Skel(), progs/maps/links</li>
+<li>build_skel_config()-&gt;ObjectSkeletonConfigBuilder::new(DATA)</li>
+<li>builder.name(<em><strong>).map(&quot;&quot;).prog(&quot;handle_</strong></em>&quot;).build()</li>
+</ol>
+</li>
+<li>libbpf-rs 提供用户常用工具
+<ol>
+<li>object/skelton</li>
+<li>prog/map/link</li>
+<li>iter/print/query/util</li>
+<li>perf/ringbuf</li>
+</ol>
+</li>
+<li>libbpf-cargo 提供cargo build时自动生成skel，gen/make</li>
+<li>执行*.skel.rs流程
+<ol>
+<li>TcSkelBuilder.open()-&gt;OpenTcSkel(obj, config)</li>
+<li>OpenTcSkel.load() &gt;&gt; bpf_object__load_skeleton(config)</li>
+<li>OpenTcSkel.load()-&gt;TcSkel(obj,config, Tclinks())</li>
+<li>OpenTcSkel.progs()-&gt;OpenTcProgs(obj)</li>
+<li>OpenTcSkel.maps()-&gt;OpenTcMaps()</li>
+<li>OpenTcSkel.data()-&gt;ffi::c_void()</li>
+<li>TcSkel.attach() &gt;&gt; bpf_object__attach_skeleton(config)</li>
+<li>TcSkel.links = TcLinks(handle_tc)</li>
+</ol>
+</li>
+<li>libbpf.h typedef struct bpf_object_skeleton bos
+<ul>
+<li>libbpf将内核bpf_xxx封装到3个struct和4个阶段phase的api，隐藏内核极多的细节</li>
+<li>error/print/open_opts/</li>
+<li>bpf_object_open_[buffer/mem/xattr]xxx</li>
+<li>bpf_object__load/__next/__set/pin/unpin</li>
+<li>bpf_[program/map/link]__set/load/fd/xxx;__attach_xxx</li>
+<li>bpf_map__[set/get/find_map]</li>
+<li>bpf_perf/kprob/uprobe/tracepoint/link_xdp/tc_hook</li>
+</ul>
+</li>
+</ol>
+<h2 id="yong-hu-tai-jia-zai-liu-cheng">用户态加载流程</h2>
+<p><img src="../images/net-token/libbpf-rs-usermode.png" alt="用户态关系图" /></p>
+<ol>
+<li>解析命令行参数中的网卡名，并获取其系统中的网卡号</li>
+<li>使用生成的skelBuilder逐步获取驱动object的内存文件描述符fd</li>
+<li>使用生成的hookBuilder创建并将自己hook在网络出入口egress/ingress。本程序只使用了egress</li>
+<li>egress加载到内核，开始执行</li>
+<li>查询tc的egress上的信息</li>
+</ol>
+<pre data-lang="rust" style="background-color:#f9f9f9;color:#111111;" class="language-rust "><code class="language-rust" data-lang="rust"><span>
+</span><span style="color:#8959a8;">fn </span><span style="color:#4271ae;">main</span><span>() -&gt; </span><span style="color:#c99e00;">Result</span><span>&lt;()&gt; {</span><span>
+</span><span>    </span><span style="color:#8e908c;">// 命令行参数解析</span><span>
+</span><span>    </span><span style="color:#8959a8;">let</span><span> opts </span><span style="color:#3e999f;">= </span><span>Command::parse();</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8e908c;">// 去掉系统的内存限制</span><span>
+</span><span>    </span><span style="color:#4271ae;">bump_memlock_rlimit</span><span>()</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8e908c;">// 从Skel里获取信息，从opts里获取ifindex</span><span>
+</span><span>    </span><span style="color:#8959a8;">let</span><span> builder </span><span style="color:#3e999f;">= </span><span>netokenSkelBuilder::default();</span><span>
+</span><span>    </span><span style="color:#8959a8;">let</span><span> open </span><span style="color:#3e999f;">=</span><span> builder.</span><span style="color:#4271ae;">open</span><span>()</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>    </span><span style="color:#8959a8;">let</span><span> skel </span><span style="color:#3e999f;">=</span><span> open.</span><span style="color:#4271ae;">load</span><span>()</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>    </span><span style="color:#8959a8;">let</span><span> fd </span><span style="color:#3e999f;">=</span><span> skel.</span><span style="color:#4271ae;">progs</span><span>().</span><span style="color:#4271ae;">handle_tc</span><span>().</span><span style="color:#4271ae;">fd</span><span>();</span><span>
+</span><span>    </span><span style="color:#8959a8;">let</span><span> ifidx </span><span style="color:#3e999f;">= </span><span>nix::net::if_::if_nametoindex(opts.iface.</span><span style="color:#4271ae;">as_str</span><span>())</span><span style="color:#3e999f;">? as </span><span style="color:#8959a8;">i32</span><span>;</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8959a8;">let mut</span><span> tc_builder </span><span style="color:#3e999f;">= </span><span>TcHookBuilder::new();</span><span>
+</span><span>    tc_builder</span><span>
+</span><span>        .</span><span style="color:#4271ae;">fd</span><span>(fd)</span><span>
+</span><span>        .</span><span style="color:#4271ae;">ifindex</span><span>(ifidx)</span><span>
+</span><span>        .</span><span style="color:#4271ae;">replace</span><span>(</span><span style="color:#f07219;">true</span><span>)</span><span>
+</span><span>        .</span><span style="color:#4271ae;">handle</span><span>(</span><span style="color:#f07219;">1</span><span>)</span><span>
+</span><span>        .</span><span style="color:#4271ae;">priority</span><span>(</span><span style="color:#f07219;">1</span><span>);</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8e908c;">// 挂载驱动到TC的egress接口上</span><span>
+</span><span>    </span><span style="color:#8959a8;">let mut</span><span> egress </span><span style="color:#3e999f;">=</span><span> tc_builder.</span><span style="color:#4271ae;">hook</span><span>(TC_EGRESS);</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8e908c;">// 执行attach，驱动开始工作</span><span>
+</span><span>    </span><span style="color:#8959a8;">if</span><span> opts.attach {</span><span>
+</span><span>        </span><span style="color:#8959a8;">if let </span><span style="color:#c99e00;">Err</span><span>(e) </span><span style="color:#3e999f;">=</span><span> egress.</span><span style="color:#4271ae;">attach</span><span>() {</span><span>
+</span><span>            bail!(</span><span style="color:#839c00;">&quot;failed to attach egress hook {}&quot;</span><span>, e);</span><span>
+</span><span>        }</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#8e908c;">// 执行destory，销毁驱动</span><span>
+</span><span>    </span><span style="color:#8959a8;">if</span><span> opts.destroy {</span><span>
+</span><span>        </span><span style="color:#8959a8;">if let </span><span style="color:#c99e00;">Err</span><span>(e) </span><span style="color:#3e999f;">=</span><span> egress.</span><span style="color:#4271ae;">detach</span><span>() {</span><span>
+</span><span>            println!(</span><span style="color:#839c00;">&quot;failed to detach egress hook </span><span>{}</span><span style="color:#839c00;">&quot;</span><span>, e);</span><span>
+</span><span>        }</span><span>
+</span><span>
+</span><span>        </span><span style="color:#8959a8;">if let </span><span style="color:#c99e00;">Err</span><span>(e) </span><span style="color:#3e999f;">=</span><span> egress.</span><span style="color:#4271ae;">destroy</span><span>() {</span><span>
+</span><span>            println!(</span><span style="color:#839c00;">&quot;failed to destroy </span><span>{}</span><span style="color:#839c00;">&quot;</span><span>, e);</span><span>
+</span><span>        }</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8e908c;">// 执行query，查询执行驱动的id</span><span>
+</span><span>    </span><span style="color:#8959a8;">match</span><span> egress.</span><span style="color:#4271ae;">query</span><span>() {</span><span>
+</span><span>        </span><span style="color:#c99e00;">Err</span><span>(e) </span><span style="color:#3e999f;">=&gt; </span><span>println!(</span><span style="color:#839c00;">&quot;failed to find egress hook: </span><span>{}</span><span style="color:#839c00;">&quot;</span><span>, e),</span><span>
+</span><span>        </span><span style="color:#c99e00;">Ok</span><span>(prog_id) </span><span style="color:#3e999f;">=&gt; </span><span>println!(</span><span style="color:#839c00;">&quot;found egress hook prog_id: </span><span>{}</span><span style="color:#839c00;">&quot;</span><span>, prog_id),</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8e908c;">// 执行监听perf，收到数据后进入handle_event，收到错误丢包进入handle_lost_events</span><span>
+</span><span>    </span><span style="color:#8959a8;">let</span><span> perf </span><span style="color:#3e999f;">= </span><span>PerfBufferBuilder::new(skel.</span><span style="color:#4271ae;">maps_mut</span><span>().</span><span style="color:#4271ae;">events</span><span>())</span><span>
+</span><span>        .</span><span style="color:#4271ae;">sample_cb</span><span>(handle_event)</span><span>
+</span><span>        .</span><span style="color:#4271ae;">lost_cb</span><span>(handle_lost_events)</span><span>
+</span><span>        .</span><span style="color:#4271ae;">build</span><span>()</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8e908c;">// 100ms一次的轮询驱动，有事件后进入上面的event</span><span>
+</span><span>    </span><span style="color:#8959a8;">loop </span><span>{</span><span>
+</span><span>        perf.</span><span style="color:#4271ae;">poll</span><span>(Duration::from_millis(</span><span style="color:#f07219;">100</span><span>))</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#c99e00;">Ok</span><span>(())</span><span>
+</span><span>}</span><span>
+</span><span>
+</span></code></pre>
+<h3 id="lei-si-yu-ji-yu-tcgong-ju-shi-xian">类似于基于tc工具实现</h3>
+<pre data-lang="sh" style="background-color:#f9f9f9;color:#111111;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#c82728;">$</span><span style="color:#4271ae;"> tc qdisc add dev xxx </span><span>
+</span><span style="color:#c82728;">$</span><span style="color:#4271ae;"> tc filter </span><span style="color:#8959a8;">[</span><span style="color:#4271ae;">add|change|replace</span><span style="color:#8959a8;">]</span><span style="color:#4271ae;"> dev xxx </span><span>
+</span><span style="color:#c82728;">$</span><span style="color:#4271ae;"> tc qdisc show dev xxx</span><span>
+</span></code></pre>
+<h2 id="qu-dong-liu-cheng">驱动流程</h2>
+<p><img src="../images/net-token/libbpf-rs-kernelmode.png" alt="用户态关系图" /></p>
+<ol>
+<li>检查入参struct __sk_buff是否是tcp报文，依次从2层解析判断到4层</li>
+<li>检查tcp报文是否是握手syn包。syn包携带options用于连接双方协商功能</li>
+<li>读取policy map，获得不同策略下的token</li>
+<li>加入token这个option到syn包中</li>
+</ol>
+<pre data-lang="rust" style="background-color:#f9f9f9;color:#111111;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e908c;">// 驱动入口，数据已由内核组装为__sk_buff</span><span>
+</span><span>SEC(</span><span style="color:#839c00;">&quot;tc&quot;</span><span>)</span><span>
+</span><span>int </span><span style="color:#4271ae;">handle_tc</span><span>(</span><span style="color:#8959a8;">struct </span><span>__sk_buff* ctx) {</span><span>
+</span><span>    struct pkthdr pkt;</span><span>
+</span><span>
+</span><span>    RET_IF(pkt_check(ctx, &amp;pkt) != RET_OK);</span><span>
+</span><span>    RET_IF(pkt.tcp-&gt;syn != 1 || pkt.tcp-&gt;ack != 0);</span><span>
+</span><span>    update_token_by_policy();</span><span>
+</span><span>    RET_IF(extend_options_token(ctx, &amp;pkt, epp_token) != RET_OK);</span><span>
+</span><span>
+</span><span>    return TC_ACT_OK;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#8e908c;">// 检查是否tcp包</span><span>
+</span><span>BPF_INLNE int </span><span style="color:#4271ae;">pkt_check</span><span>(</span><span style="color:#8959a8;">struct </span><span>__sk_buff* ctx, struct pkthdr* pkt) {</span><span>
+</span><span>    pkt-&gt;data = (void*)(long)ctx-&gt;data;</span><span>
+</span><span>    pkt-&gt;data_end = (void*)(long)ctx-&gt;data_end;</span><span>
+</span><span>    pkt-&gt;eth = pkt-&gt;data;</span><span>
+</span><span>    pkt-&gt;ipv4 = pkt-&gt;data + sizeof(struct ethhdr);</span><span>
+</span><span>
+</span><span>    RET_ERR_IF(pkt-&gt;eth + 1 &gt; (struct ethhdr*)(pkt-&gt;data_end));</span><span>
+</span><span>    RET_ERR_IF(pkt-&gt;eth-&gt;h_proto != bpf_constant_htons(ETH_P_IP));</span><span>
+</span><span>    RET_ERR_IF(pkt-&gt;ipv4 + 1 &gt; (struct iphdr*)(pkt-&gt;data_end));</span><span>
+</span><span>    RET_ERR_IF(pkt-&gt;ipv4-&gt;protocol != IPPROTO_TCP);</span><span>
+</span><span>    pkt-&gt;tcp = pkt-&gt;data + sizeof(struct ethhdr) + (pkt-&gt;ipv4-&gt;ihl * 4);</span><span>
+</span><span>    RET_ERR_IF(pkt-&gt;tcp + 1 &gt; (struct tcphdr*)(pkt-&gt;data_end));</span><span>
+</span><span>
+</span><span>    return RET_OK;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#8e908c;">// 增加tcp的options的token option，对网卡以支持的offload计算checksum的，注释掉加快执行</span><span>
+</span><span>BPF_INLNE int </span><span style="color:#4271ae;">extend_options_token</span><span>(</span><span style="color:#8959a8;">struct </span><span>__sk_buff* ctx, struct pkthdr* pkt, u64 token) {</span><span>
+</span><span>    u32 data_end = ctx-&gt;len; </span><span style="color:#8e908c;">// 非线性包总长</span><span>
+</span><span>    u16 sz = sizeof(token);</span><span>
+</span><span>    pkt-&gt;ipv4-&gt;tot_len = bpf_htons(pkt-&gt;ipv4-&gt;ihl * 4 + pkt-&gt;tcp-&gt;doff * 4 + sz);</span><span>
+</span><span>    pkt-&gt;tcp-&gt;doff = pkt-&gt;tcp-&gt;doff + sz / 4;</span><span>
+</span><span>
+</span><span>    RET_IF(bpf_skb_change_tail(ctx, ctx-&gt;len + sz, 0));</span><span>
+</span><span>    RET_IF(bpf_skb_store_bytes(ctx, data_end, &amp;token, sizeof(token), 0));</span><span>
+</span><span>
+</span><span>    RET_IF(bpf_l3_csum_replace(ctx, IP_CSUM_OFFSET, 0, bpf_constant_htons(sz), 0));</span><span>
+</span><span>    </span><span style="color:#8e908c;">// RET_IF(bpf_l4_csum_replace(ctx, TCP_CSUM_OFFSET, 0, sz / 4, BPF_F_PSEUDO_HDR | sizeof(u8)))</span><span>
+</span><span>
+</span><span>    u16 csum = bpf_csum_diff(0, 0, (u32*)&amp;token, sizeof(token), 0); </span><span style="color:#8e908c;">// 2 tcp pseudo</span><span>
+</span><span>    </span><span style="color:#8e908c;">// RET_IF(bpf_l4_csum_replace(ctx, TCP_CSUM_OFFSET, 0, csum, 0));</span><span>
+</span><span>
+</span><span>    update_metrics();</span><span>
+</span><span>
+</span><span>    return RET_OK;</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<h2 id="kuo-zhan-xdp">扩展xdp</h2>
+<p>libbpf-rs只提供了一个attach_xdp接口，其他xdp独立在libbpf项目中实现</p>
+<p>需要af_xdp高级功能的可以试试
+<a href="https://github.com/chenhengqi/libxdp-rs">libxdp-rs</a>
+由腾讯员工开发，主要用rust binding的<a href="https://github.com/xdp-project/xdp-tools">xdp-tools</a>的功能，其中就有独立开发的libxdp</p>
+<h2 id="ayadeng-qi-ta-rustde-bpfxiang-mu-jian-shu">aya等其他rust的bpf项目简述</h2>
+<p>libpf-rs的复杂度低，开发起点也低，代码中unsafe很少。aya和redbpf就更高维了，能力和野心都很大，难度自然也就大了</p>
+<p>首先用rust写驱动，没有std，更多的是unsafe和MaybeUninit，心里上畏惧。</p>
+<p>再者成功的开发案例也不多，如果业务复杂度很高，倒是可以考虑。但也别担心，内核5.20加入rust后，可以开始了。</p>
+<p>驱动很能体现rust的表现力</p>
+<pre data-lang="rust" style="background-color:#f9f9f9;color:#111111;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#![</span><span style="color:#c82728;">no_std</span><span>] </span><span style="color:#8e908c;">// </span><span>
+</span><span>#![</span><span style="color:#c82728;">no_main</span><span>] </span><span style="color:#8e908c;">// </span><span>
+</span><span>
+</span><span style="color:#8959a8;">use </span><span>aya_bpf::{ macros::xdp, bindings::xdp_action, programs::XdpContext,</span><span>
+</span><span>    maps::{HashMap, PerfEventArray}, };</span><span>
+</span><span style="color:#8959a8;">use </span><span>aya_log_ebpf::info;</span><span>
+</span><span style="color:#8959a8;">use </span><span>myapp_common::PacketLog;</span><span>
+</span><span>
+</span><span>#[</span><span style="color:#c82728;">map</span><span>(name </span><span style="color:#3e999f;">= </span><span style="color:#839c00;">&quot;EVENTS&quot;</span><span>)]  </span><span style="color:#8e908c;">// map macro</span><span>
+</span><span style="color:#8959a8;">static mut </span><span>EVENTS: PerfEventArray&lt;ip_src&gt; </span><span style="color:#3e999f;">=</span><span>
+</span><span>    PerfEventArray::&lt;ip_src&gt;::with_max_entries(</span><span style="color:#f07219;">1024</span><span>, </span><span style="color:#f07219;">0</span><span>);</span><span>
+</span><span>
+</span><span>#[</span><span style="color:#c82728;">xdp</span><span>(name</span><span style="color:#3e999f;">=</span><span style="color:#839c00;">&quot;myapp&quot;</span><span>)] </span><span style="color:#8e908c;">// hook点用macro实现，很rust</span><span>
+</span><span style="color:#8959a8;">pub fn </span><span style="color:#4271ae;">myapp</span><span>(</span><span style="color:#f07219;">ctx</span><span>: XdpContext) -&gt; </span><span style="color:#8959a8;">u32 </span><span>{</span><span>
+</span><span>    </span><span style="color:#8e908c;">// match匹配xdp_ctx也很直观</span><span>
+</span><span>    </span><span style="color:#8959a8;">match unsafe </span><span>{ </span><span style="color:#4271ae;">try_myapp</span><span>(ctx) } {</span><span>
+</span><span>        </span><span style="color:#c99e00;">Ok</span><span>(ret) </span><span style="color:#3e999f;">=&gt;</span><span> ret,</span><span>
+</span><span>        </span><span style="color:#c99e00;">Err</span><span>(</span><span style="color:#3e999f;">_</span><span>) </span><span style="color:#3e999f;">=&gt; </span><span>xdp_action::XDP_ABORTED,</span><span>
+</span><span>    }</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#8959a8;">unsafe fn </span><span style="color:#4271ae;">try_myapp</span><span>(</span><span style="color:#f07219;">ctx</span><span>: XdpContext) -&gt; </span><span style="color:#c99e00;">Result</span><span>&lt;</span><span style="color:#8959a8;">u32</span><span>, </span><span style="color:#8959a8;">u32</span><span>&gt; {</span><span>
+</span><span>    </span><span style="color:#8e908c;">// 方便的printk宏</span><span>
+</span><span>    info!(</span><span style="color:#3e999f;">&amp;</span><span>ctx, </span><span style="color:#839c00;">&quot;received a packet&quot;</span><span>);</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8959a8;">unsafe </span><span>{</span><span>
+</span><span>        EVENTS.</span><span style="color:#4271ae;">output</span><span>(</span><span style="color:#3e999f;">&amp;</span><span>ctx, </span><span style="color:#3e999f;">&amp;</span><span>ip_src, </span><span style="color:#f07219;">0</span><span>); </span><span style="color:#8e908c;">// 隐去ip_src的解析过程...</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span style="color:#c99e00;">Ok</span><span>(xdp_action::XDP_PASS)</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span>#[</span><span style="color:#c82728;">panic_handler</span><span>] </span><span style="color:#8e908c;">// hook在异常上</span><span>
+</span><span style="color:#8959a8;">fn </span><span style="color:#4271ae;">panic</span><span>(</span><span style="color:#f07219;">_info</span><span>: </span><span style="color:#3e999f;">&amp;</span><span>core::panic::PanicInfo) -&gt; </span><span style="color:#3e999f;">! </span><span>{</span><span>
+</span><span>    </span><span style="color:#8959a8;">unsafe </span><span>{ core::hint::unreachable_unchecked() }</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<h3 id="yong-hu-tai">用户态</h3>
+<pre data-lang="rust" style="background-color:#f9f9f9;color:#111111;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#c82728;">tokio</span><span>::</span><span style="color:#c82728;">main</span><span>]</span><span>
+</span><span>async </span><span style="color:#8959a8;">fn </span><span style="color:#4271ae;">main</span><span>() -&gt; </span><span style="color:#c99e00;">Result</span><span>&lt;(), anyhow::Error&gt; {</span><span>
+</span><span>    </span><span style="color:#8959a8;">let mut</span><span> bpf </span><span style="color:#3e999f;">= </span><span>Bpf::load(include_bytes_aligned!(</span><span>
+</span><span>        </span><span style="color:#839c00;">&quot;../../target/bpfel-unknown-none/release/myapp&quot;</span><span>
+</span><span>    ))</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>    </span><span style="color:#8959a8;">let</span><span> program: </span><span style="color:#3e999f;">&amp;</span><span style="color:#8959a8;">mut</span><span> Xdp </span><span style="color:#3e999f;">=</span><span> bpf.</span><span style="color:#4271ae;">program_mut</span><span>(</span><span style="color:#839c00;">&quot;xdp&quot;</span><span>).</span><span style="color:#4271ae;">unwrap</span><span>().</span><span style="color:#4271ae;">try_into</span><span>()</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>    program.</span><span style="color:#4271ae;">load</span><span>()</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>    program.</span><span style="color:#4271ae;">attach</span><span>(</span><span style="color:#3e999f;">&amp;</span><span>opt.iface, XdpFlags::default())</span><span>
+</span><span>        .</span><span style="color:#4271ae;">context</span><span>(</span><span style="color:#839c00;">&quot;failed to attach the XDP program with default flags&quot;</span><span>)</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>
+</span><span>    </span><span style="color:#3e999f;">...</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8959a8;">let mut</span><span> perf_array </span><span style="color:#3e999f;">= </span><span>AsyncPerfEventArray::try_from(bpf.</span><span style="color:#4271ae;">map_mut</span><span>(</span><span style="color:#839c00;">&quot;EVENTS&quot;</span><span>)</span><span style="color:#3e999f;">?</span><span>)</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>
+</span><span>    </span><span style="color:#8e908c;">// 下面还可以封装简化下</span><span>
+</span><span>    </span><span style="color:#8959a8;">for</span><span> cpu_id </span><span style="color:#3e999f;">in </span><span style="color:#4271ae;">online_cpus</span><span>()</span><span style="color:#3e999f;">? </span><span>{ </span><span style="color:#8e908c;">// iter vec&lt;u32&gt; cpus</span><span>
+</span><span>        </span><span style="color:#8959a8;">let mut</span><span> buf </span><span style="color:#3e999f;">=</span><span> perf_array.</span><span style="color:#4271ae;">open</span><span>(cpu_id, </span><span style="color:#c99e00;">None</span><span>)</span><span style="color:#3e999f;">?</span><span>;</span><span>
+</span><span>
+</span><span>        task::spawn(async </span><span style="color:#8959a8;">move </span><span>{</span><span>
+</span><span>            </span><span style="color:#8959a8;">let mut</span><span> buffers </span><span style="color:#3e999f;">= </span><span>(</span><span style="color:#f07219;">0</span><span style="color:#3e999f;">..</span><span style="color:#f07219;">10</span><span>)</span><span>
+</span><span>                .</span><span style="color:#4271ae;">map</span><span>(|_| BytesMut::with_capacity(</span><span style="color:#f07219;">1024</span><span>))</span><span>
+</span><span>                .collect::&lt;</span><span style="color:#c99e00;">Vec</span><span>&lt;</span><span style="color:#3e999f;">_</span><span>&gt;&gt;();</span><span>
+</span><span>
+</span><span>            </span><span style="color:#8959a8;">loop </span><span>{</span><span>
+</span><span>                </span><span style="color:#8959a8;">let</span><span> events </span><span style="color:#3e999f;">=</span><span> buf.</span><span style="color:#4271ae;">read_events</span><span>(</span><span style="color:#3e999f;">&amp;</span><span style="color:#8959a8;">mut</span><span> buffers).await.</span><span style="color:#4271ae;">unwrap</span><span>();</span><span>
+</span><span>                </span><span style="color:#8959a8;">for</span><span> i </span><span style="color:#3e999f;">in </span><span style="color:#f07219;">0</span><span style="color:#3e999f;">..</span><span>events.read {</span><span>
+</span><span>                    </span><span style="color:#8959a8;">let</span><span> buf </span><span style="color:#3e999f;">= &amp;</span><span style="color:#8959a8;">mut</span><span> buffers[i];</span><span>
+</span><span>                    </span><span style="color:#8959a8;">let</span><span> ptr </span><span style="color:#3e999f;">=</span><span> buf.</span><span style="color:#4271ae;">as_ptr</span><span>() </span><span style="color:#3e999f;">as </span><span style="color:#8959a8;">*const</span><span> ip_src;</span><span>
+</span><span>                    </span><span style="color:#8959a8;">let</span><span> data </span><span style="color:#3e999f;">= </span><span style="color:#8959a8;">unsafe </span><span>{ ptr.</span><span style="color:#4271ae;">read_unaligned</span><span>() };</span><span>
+</span><span>                    </span><span style="color:#8959a8;">let</span><span> src_addr </span><span style="color:#3e999f;">= </span><span>net::Ipv4Addr::from(data.ip_src);</span><span>
+</span><span>                    println!(</span><span style="color:#839c00;">&quot;LOG: SRC </span><span>{}</span><span style="color:#839c00;">, ACTION </span><span>{}</span><span style="color:#839c00;">&quot;</span><span>, src_addr, data.action);</span><span>
+</span><span>                }</span><span>
+</span><span>            }</span><span>
+</span><span>        });</span><span>
+</span><span>    }</span><span>
+</span><span>    signal::ctrl_c().await.</span><span style="color:#4271ae;">expect</span><span>(</span><span style="color:#839c00;">&quot;failed to listen for event&quot;</span><span>);</span><span>
+</span><span>    </span><span style="color:#c99e00;">Ok</span><span>::&lt;</span><span style="color:#3e999f;">_</span><span>, anyhow::Error&gt;(())</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>以上只是一小部分，还有更多的支持</p>
+<ul>
+<li>Probes</li>
+<li>Tracepoints</li>
+<li>Socket Programs</li>
+<li>Classifiers</li>
+<li>Cgroups</li>
+<li>XDP</li>
+<li>LSM</li>
+</ul>
+<hr />
+<p><em><strong>以下作为API参考</strong></em></p>
+<h3 id="libbpf-rsde-api">libbpf-rs的api</h3>
+<pre data-lang="c" style="background-color:#f9f9f9;color:#111111;" class="language-c "><code class="language-c" data-lang="c"><span>    </span><span style="color:#8959a8;">struct </span><span>bpf_map_skeleton { </span><span style="color:#3e999f;">*</span><span>name, </span><span style="color:#3e999f;">**</span><span>map }</span><span>
+</span><span>    </span><span style="color:#8959a8;">struct </span><span>bpf_prog_skeleton { </span><span style="color:#3e999f;">*</span><span>name, </span><span style="color:#3e999f;">**</span><span>prog }</span><span>
+</span><span>    </span><span style="color:#8959a8;">struct </span><span>bpf_object_skeleton { </span><span style="color:#3e999f;">**</span><span>obj, </span><span style="color:#3e999f;">*</span><span style="color:#c82728;">maps</span><span style="color:#4271ae;">(skel)</span><span>, </span><span style="color:#3e999f;">*</span><span style="color:#c82728;">progs</span><span style="color:#4271ae;">(skel) </span><span>}</span><span>
+</span><span>   </span><span>
+</span><span>    </span><span style="color:#8959a8;">int </span><span style="color:#4271ae;">bpf_object__open_skeleton</span><span>(bos </span><span style="color:#3e999f;">*</span><span style="color:#f07219;">s</span><span>, </span><span style="color:#3e999f;">*</span><span style="color:#f07219;">opts</span><span>);</span><span>
+</span><span>    </span><span style="color:#8959a8;">int </span><span style="color:#4271ae;">bpf_object__load_skeleton</span><span>(bos </span><span style="color:#3e999f;">*</span><span style="color:#f07219;">s</span><span>);</span><span>
+</span><span>    </span><span style="color:#8959a8;">int </span><span style="color:#4271ae;">bpf_object__attach_skeleton</span><span>(bos </span><span style="color:#3e999f;">*</span><span style="color:#f07219;">s</span><span>);</span><span>
+</span><span>    </span><span style="color:#8959a8;">void </span><span style="color:#4271ae;">bpf_object__detach_skeleton</span><span>(bos </span><span style="color:#3e999f;">*</span><span style="color:#f07219;">s</span><span>);</span><span>
+</span><span>    </span><span style="color:#8959a8;">void </span><span style="color:#4271ae;">bpf_object__destroy_skeleton</span><span>(bos </span><span style="color:#3e999f;">*</span><span style="color:#f07219;">s</span><span>);</span><span>
+</span></code></pre>
+<h3 id="build-rs-zi-dong-sheng-cheng-dai-ma-mo-ban-tc-skel-rs">build.rs 自动生成代码模板 tc.skel.rs</h3>
+<p>最终返给用户TcSkel, 包含progs、maps、data
+map中的字段根据bpf.c中map生成
+call-&gt;libbpf-cargo::lib.rs::SkeletonBuilder().build_generate(&amp;skel)</p>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span style="color:#8959a8;">pub struct </span><span>
+</span><span>    TcSkelBuilder.ObjectBuilder,</span><span>
+</span><span>    OpenTcSkel.OpenObject,</span><span>
+</span><span>    TcSkel.Object,</span><span>
+</span><span>
+</span><span>    OpenTcProgs.OpenObject,</span><span>
+</span><span>    TcProgs.Object,</span><span>
+</span><span>
+</span><span>    OpenTcMaps.OpenObject,</span><span>
+</span><span>    TcMaps.Object,</span><span>
+</span><span>
+</span><span>    TcLinks.Option&lt;Link&gt;,</span><span>
+</span><span>
+</span><span>TcSkelBuilder.open()-&gt;OpenTcSkel(obj, config)</span><span>
+</span><span>OpenTcSkel.</span><span style="color:#4271ae;">load</span><span>() </span><span style="color:#3e999f;">&gt;&gt; </span><span style="color:#4271ae;">bpf_object__load_skeleton</span><span>(config)</span><span>
+</span><span>OpenTcSkel.</span><span style="color:#4271ae;">load</span><span>()-&gt;TcSkel(obj,config, Tclinks())</span><span>
+</span><span>    OpenTcSkel.</span><span style="color:#4271ae;">progs</span><span>()-&gt;OpenTcProgs(obj)</span><span>
+</span><span>    OpenTcSkel.</span><span style="color:#4271ae;">maps</span><span>()-&gt;OpenTcMaps()</span><span>
+</span><span>    OpenTcSkel.</span><span style="color:#4271ae;">data</span><span>()-&gt;ffi::c_void()</span><span>
+</span><span>
+</span><span>TcSkel.</span><span style="color:#4271ae;">attach</span><span>() </span><span style="color:#3e999f;">&gt;&gt; </span><span style="color:#4271ae;">bpf_object__attach_skeleton</span><span>(config)</span><span>
+</span><span>TcSkel.links </span><span style="color:#3e999f;">=</span><span> TcLinks(handle_tc)</span><span>
+</span><span>
+</span><span>TcProgs.handle_tc</span><span>
+</span><span>TcMaps.[ports、data、rodata]</span><span>
+</span></code></pre>
+<h3 id="bindings-rs-zi-dong-sheng-cheng-by-rust-bindgen">bindings.rs 自动生成 by rust-bindgen</h3>
+<p>从10个头文件，用build.rs规则生成
+process::Command::new(&quot;make&quot;)
+bpf.h
+libbpf.h
+btf.h
+xsk.h
+bpf_helpers.h
+bpf_helper_defs.h
+bpf_tracing.h
+bpf_endian.h
+bpf_core_read.h
+libbpf_common.h</p>
+<h2 id="libbpf-rs-gong-neng">libbpf-rs 功能</h2>
+<p>提供一系列工具</p>
+<h3 id="tc-rs">tc.rs</h3>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span>TcHookBuilder-&gt; TcHook</span><span>
+</span><span>    tc_builder</span><span>
+</span><span>        .</span><span style="color:#4271ae;">fd</span><span>(fd)</span><span>
+</span><span>        .</span><span style="color:#4271ae;">ifindex</span><span>(ifidx)</span><span>
+</span><span>        .</span><span style="color:#4271ae;">replace</span><span>(</span><span style="color:#f07219;">true</span><span>)</span><span>
+</span><span>        .</span><span style="color:#4271ae;">handle</span><span>(</span><span style="color:#f07219;">1</span><span>)</span><span>
+</span><span>        .</span><span style="color:#4271ae;">priority</span><span>(</span><span style="color:#f07219;">1</span><span>);</span><span>
+</span><span>
+</span><span>TcHook</span><span>
+</span><span>    tc_hook</span><span>
+</span></code></pre>
+<h3 id="skeleton-rs">skeleton.rs</h3>
+<p>SkelConfig封装 map和prog, </p>
+<p>对libbpf_sys::bpf_object_skeleton 的封装</p>
+<p>用于生命周期的obj和内存持有的_data/_string_pool</p>
+<p>用于内存析构drop的progs/maps的layout</p>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span>ObjectSkeletonConfigBuilder.</span><span style="color:#4271ae;">build</span><span>()-&gt;ObjectSkeletonConfig()</span><span>
+</span><span>    libbpf_sys::bpf_object_skeleton()</span><span>
+</span><span>    .</span><span style="color:#4271ae;">build_maps</span><span>(s, string_pool)-&gt;maps_layout</span><span>
+</span><span>    .</span><span style="color:#4271ae;">build_progs</span><span>(s, string_pool)-&gt;progs_layout</span><span>
+</span><span>
+</span><span style="color:#8e908c;">// libbpf_sys::bpf_object_skeleton  wrap</span><span>
+</span><span style="color:#8e908c;">/// * ensure lifetimes are valid for dependencies (pointers, data buffer)</span><span>
+</span><span style="color:#8e908c;">/// * free any allocated memory on drop</span><span>
+</span><span style="color:#8959a8;">pub struct </span><span>ObjectSkeletonConfig&lt;</span><span style="color:#8959a8;">&#39;a</span><span>&gt; {</span><span>
+</span><span>    </span><span style="color:#c82728;">inner</span><span>: bpf_object_skeleton,</span><span>
+</span><span>    </span><span style="color:#c82728;">obj</span><span>: </span><span style="color:#c99e00;">Box</span><span>&lt;</span><span style="color:#8959a8;">*mut</span><span> bpf_object&gt;,</span><span>
+</span><span>    </span><span style="color:#c82728;">maps</span><span>: </span><span style="color:#c99e00;">Vec</span><span>&lt;MapSkelConfig&gt;,</span><span>
+</span><span>    </span><span style="color:#c82728;">progs</span><span>: </span><span style="color:#c99e00;">Vec</span><span>&lt;ProgSkelConfig&gt;,</span><span>
+</span><span>    </span><span style="color:#8e908c;">/// Layout necessary to `dealloc` memory</span><span>
+</span><span>    </span><span style="color:#c82728;">maps_layout</span><span>: </span><span style="color:#c99e00;">Option</span><span>&lt;Layout&gt;,</span><span>
+</span><span>    </span><span style="color:#8e908c;">/// Same as above</span><span>
+</span><span>    </span><span style="color:#c82728;">progs_layout</span><span>: </span><span style="color:#c99e00;">Option</span><span>&lt;Layout&gt;,</span><span>
+</span><span>    </span><span style="color:#8e908c;">/// Hold this reference so that compiler guarantees buffer lives as long as us</span><span>
+</span><span>    </span><span style="color:#c82728;">_data</span><span>: </span><span style="color:#3e999f;">&amp;</span><span style="color:#8959a8;">&#39;a</span><span> [</span><span style="color:#8959a8;">u8</span><span>],</span><span>
+</span><span>    </span><span style="color:#8e908c;">/// Hold strings alive so pointers to them stay valid</span><span>
+</span><span>    </span><span style="color:#c82728;">_string_pool</span><span>: </span><span style="color:#c99e00;">Vec</span><span>&lt;CString&gt;,</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<h3 id="query-rs">query.rs</h3>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span style="color:#8959a8;">for</span><span> prog </span><span style="color:#3e999f;">in </span><span>ProgInfoIter::default() {</span><span>
+</span><span>     println!(</span><span style="color:#839c00;">&quot;</span><span>{}</span><span style="color:#839c00;">&quot;</span><span>, prog.name);</span><span>
+</span><span>[Program</span><span style="color:#3e999f;">/</span><span>Map</span><span style="color:#3e999f;">/</span><span>Btf</span><span style="color:#3e999f;">/</span><span>Link] Info</span><span>
+</span></code></pre>
+<h3 id="program-rs">program.rs</h3>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span>OpenProgram.[set_[map_ifindex</span><span style="color:#3e999f;">/</span><span>fd</span><span style="color:#3e999f;">/...</span><span>]]</span><span>
+</span><span>Program.[name</span><span style="color:#3e999f;">/</span><span>sectyion</span><span style="color:#3e999f;">/</span><span>fd</span><span style="color:#3e999f;">/</span><span>key_size</span><span style="color:#3e999f;">/</span><span>value_size</span><span style="color:#3e999f;">/</span><span>lookup</span><span style="color:#3e999f;">/</span><span>delte</span><span style="color:#3e999f;">/</span><span>update</span><span style="color:#3e999f;">/</span><span>pin</span><span style="color:#3e999f;">/</span><span>unpin]]</span><span>
+</span></code></pre>
+<h3 id="maps-rs">maps.rs</h3>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span>OpenMap.[set_[prog_type</span><span style="color:#3e999f;">/</span><span>attach_type</span><span style="color:#3e999f;">/</span><span>ifindex</span><span style="color:#3e999f;">/</span><span>flags]]</span><span>
+</span><span>Map.[name</span><span style="color:#3e999f;">/</span><span>sectyion</span><span style="color:#3e999f;">/</span><span>fd</span><span style="color:#3e999f;">/</span><span>pin</span><span style="color:#3e999f;">/</span><span>unpin</span><span style="color:#3e999f;">/</span><span>attach[cgroup</span><span style="color:#3e999f;">/</span><span>perf</span><span style="color:#3e999f;">/</span><span>uprobe</span><span style="color:#3e999f;">/</span><span>trace</span><span style="color:#3e999f;">/</span><span>xdp]]</span><span>
+</span></code></pre>
+<h3 id="link-rs-bpfyu-hookde-chou-xiang-ke-yi-guan-li">link.rs bpf与hook的抽象，可以管理</h3>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span>Link.[open</span><span style="color:#3e999f;">/</span><span>update_prog</span><span style="color:#3e999f;">/</span><span>dsconnet</span><span style="color:#3e999f;">/</span><span>pin</span><span style="color:#3e999f;">/</span><span>fd</span><span style="color:#3e999f;">/</span><span>detach]</span><span>
+</span><span>bpf_link_type.[xdp</span><span style="color:#3e999f;">/</span><span>perf_event</span><span style="color:#3e999f;">/</span><span>cgroup</span><span style="color:#3e999f;">/</span><span>raw</span><span style="color:#3e999f;">/</span><span>trace]</span><span>
+</span></code></pre>
+<h3 id="object-rs">object.rs</h3>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span>OpenObject: open but not load [bpf_object</span><span style="color:#3e999f;">/</span><span>maps</span><span style="color:#3e999f;">/</span><span>progs</span><span style="color:#3e999f;">/</span><span>name</span><span style="color:#3e999f;">/</span><span>map</span><span style="color:#3e999f;">/</span><span>prog</span><span style="color:#3e999f;">/</span><span>load] Populate obj.maps</span><span style="color:#3e999f;">/</span><span>obj.progs</span><span>
+</span><span>Object: open and loaded object</span><span>
+</span><span>ObjectBuilder.[name</span><span style="color:#3e999f;">/</span><span>debug</span><span style="color:#3e999f;">/</span><span>opts</span><span style="color:#3e999f;">/</span><span>open_file</span><span style="color:#3e999f;">/</span><span>open_mem]-&gt;</span><span style="color:#8959a8;">OpenObject::</span><span>new()</span><span>
+</span></code></pre>
+<h3 id="ringbuf-rs">ringbuf.rs</h3>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span>RingBuffer.[ring_buffer</span><span style="color:#3e999f;">/</span><span>poll</span><span style="color:#3e999f;">/</span><span>consume]</span><span>
+</span><span>RingBufferBuilder.[RingBufferCallback</span><span style="color:#3e999f;">/</span><span>add</span><span style="color:#3e999f;">/</span><span>build]-&gt;RingBuffer()</span><span>
+</span></code></pre>
+<h3 id="util-rs">util.rs</h3>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span>str_to_cstring</span><span style="color:#3e999f;">/</span><span>path_to_cstring</span><span style="color:#3e999f;">/</span><span style="color:#8959a8;">c_ptr_to_string</span><span>
+</span><span>roundup</span><span style="color:#3e999f;">/</span><span>num_possible_cpus</span><span>
+</span><span>parse_ret</span><span style="color:#3e999f;">/</span><span>parse_ret_i32</span><span style="color:#3e999f;">/</span><span>parse_ret_usize</span><span>
+</span></code></pre>
+<h2 id="libbpf-cargo-gong-neng">libbpf-cargo 功能</h2>
+<h3 id="main-rs">main.rs</h3>
+<p>clap Command:[Build/Gen/Make]分别对应下3个文件,main只是api</p>
+<h3 id="lib-rs">lib.rs</h3>
+<p>给用户工程build.rs提供自动build和gen</p>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span>    SkeletonBuilder::new().</span><span style="color:#4271ae;">source</span><span>(SRC).</span><span style="color:#4271ae;">build_and_generate</span><span>(</span><span style="color:#3e999f;">&amp;</span><span>skel)</span><span>
+</span><span>    </span><span style="color:#4271ae;">build</span><span>()-&gt;build::build_single()</span><span>
+</span><span>    generate()-&gt;gen::gen_single()</span><span>
+</span></code></pre>
+<h3 id="make-rs">make.rs</h3>
+<ul>
+<li>批处理build and gen</li>
+<li>build::build()</li>
+<li>gen::gen()</li>
+<li>最后Command::new(&quot;cargo&quot;).arg(&quot;build&quot;)</li>
+</ul>
+<h3 id="build-rs">build.rs</h3>
+<p>build_single() 用于用户工程 -&gt;compile_one()-&gt;Command</p>
+<pre style="background-color:#f9f9f9;color:#111111;"><code><span>build() 用于cargo -&gt;compile()-&gt;compile_one()</span><span>
+</span><span>    extract_libbpf_headers_to_disk()</span><span>
+</span><span>    check_progs/check_clang()/</span><span>
+</span></code></pre>
+<h3 id="gen-rs">gen.rs</h3>
+<pre style="background-color:#f9f9f9;color:#111111;"><code><span>    gen-&gt;gen_single-&gt;gen_skel(debug, name, obj_file, output, rustfmt_path)-&gt;</span><span>
+</span><span>    gen_skel_contents()</span><span>
+</span><span>        open_bpf_object()</span><span>
+</span><span>        gen_skel_c_skel_constructor()-&gt;libbpf_rs::skeleton::**ObjectSkeletonConfigBuilder**::new(DATA); # skeleton.rs</span><span>
+</span><span>        map/prog/datasec</span><span>
+</span><span>            gen_skel_xxx_defs()?; gen_skel_xxx_getter()?; gen_skel_link_getter()</span><span>
+</span><span>            gen_skel_attach()-&gt;libbpf_sys::bpf_object__attach_skeleton(</span><span>
+</span></code></pre>
+<h3 id="metadata-rs">metadata.rs</h3>
+<pre style="background-color:#f9f9f9;color:#111111;"><code><span>cargo时的 to_compile</span><span>
+</span><span>get()-&gt;target_dir, metadata.target_directory.into_std_path_buf()</span><span>
+</span><span>    轮询所有package后，if id == &amp;package.id </span><span>
+</span><span>    get_package() </span><span>
+</span></code></pre>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://github.com/jimluo/netoken">netoken</a></p>
+</div>
+
+  </div>
+
+  <hr class="footer-rule" />
+
+  
+
+  <div class="related-container">
+
+    
+      <div class="link">
+        Previous <br />
+        <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;https-redirect&#x2F;">HTTPS下强制认证</a>
+      </div>
+    
+
+    
+
+  </div>
+
+
+    </main>
+    <footer class="footer-page">
+    
+      
+        <p>© 2022, Jim Luo | simple-dev-blog theme on Zola</p>
+
+      
+    
+    </footer>
+  </body>
+</html>

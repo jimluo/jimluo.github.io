@@ -78,6 +78,10 @@
     
      
   
+    <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;net-token&#x2F;" />
+  
+    <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;https-redirect&#x2F;" />
+  
     <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;minidhcp&#x2F;" />
   
     <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;bpf-vs-dpdk&#x2F;" />
@@ -101,6 +105,52 @@
     
   <h2 id="blog">Blog</h2>
 
+
+  
+    
+  <div class="post-preview">
+    <h3 class="post-title"><a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;net-token&#x2F;">基于Rust和BPF技术的网络TCP水印</a></h3>
+    <small>
+      March 23, 2022 - 2372 words - 12 mins
+    </small>
+    <div class="summary">
+      
+        网络水印用于防DDoS攻击和网络流量等安全领域，原理是给报文增加特征信息，基于TCP options的增加字段不会被防火墙等修改去除，本文正是使用BPF和Rust来达到高效的实现的具体描述。1 源码参见[]
+保护知识产权的图片水印不在此列
+
+BPF驱动使用c开发
+用户态的配置和加载器使用rust和libbpf-rs加速开发
+
+依赖封装关系
+
+基于libbpf-rs开发, libbpf-rs提供用于开发的API抽象，包括驱动object和其静态程序、通讯、挂载上程序的资源抽象
+同时libbpf-sys封装了unsafe的libbpf和libelf、zlib，其中核心是基于内核的一部分libbpf…
+      <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;net-token&#x2F;">read more</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="post-preview">
+    <h3 class="post-title"><a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;https-redirect&#x2F;">HTTPS下强制认证</a></h3>
+    <small>
+      January 10, 2022 - 1913 words - 10 mins
+    </small>
+    <div class="summary">
+      
+        网络安全准入对终端设备最开始和直接的就是强制其认证合法性。
+原有基于HTTP重定向认证已失效，因为HTTP不安全。且浏览器都强制HSTS技术只能HTTPS。
+怎么在HTTPS下还能重定向来认证？
+住宿酒店和搭乘飞机时会对我们有所启发。接入提供的免费WIFI后会重定向。
+结论就是诱使OS发出HTTP。
+技术背景
+网络准入产品可以验证终端设备是否安全，使用强制网络门户认证技术实现此验证
+
+强制网络门户认证(captive portal），终端入网后，强制弹出浏览器的认证页面，强制用户认证后使用网络
+HSTS(HTTP Strict Transport Security), 防止MiTM中间人攻击，…
+      <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;https-redirect&#x2F;">read more</a>
+    </div>
+  </div>
 
   
     
