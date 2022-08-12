@@ -5,8 +5,205 @@
 	<link href="https://jimluo.github.io/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://jimluo.github.io/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2022-03-23T00:00:00+00:00</updated>
+	<updated>2022-05-09T00:00:00+00:00</updated>
 	<id>https://jimluo.github.io/atom.xml</id>
+	<entry xml:lang="en">
+		<title>CWPP中Audit的升级换代</title>
+		<published>2022-05-09T00:00:00+00:00</published>
+		<updated>2022-05-09T00:00:00+00:00</updated>
+		<link href="https://jimluo.github.io/audit-upgrade/" type="text/html"/>
+		<id>https://jimluo.github.io/audit-upgrade/</id>
+		<content type="html">&lt;p&gt;技术背景是CWPP(Cloud Workload Protection Platforms)云工作负载保护平台，通常基于代理在计算机中永久运行，收集与安全相关的数据和事件，并将其发送到基于云服务分析后通知用户相应的潜在安全威胁。&lt;&#x2F;p&gt;
+&lt;p&gt;其中的一个子系统audit，是一个用于收集记录系统、内核、用户进程发生的行为事件的被动防御的安全审计系统。该系统可以可靠地收集有关上任何与安全相关事件的信息，如记录文件访问、网络访问、用户指令、系统调用和系统安全事件。&lt;&#x2F;p&gt;
+&lt;p&gt;随着时间的推移，内核的发展，其存在问题日显突出&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;性能开销大：开启服务的支付卡安全标准，系统吞吐率下降30%，系统调用开销下降50%，上下文切换下降10%，其他下降%2-10%左右&lt;&#x2F;li&gt;
+&lt;li&gt;不能灵活调节性能：只是开启服务但不执行，系统吞吐率下降20%，系统调用开销下降35%，其他下降%2-10%左右&lt;&#x2F;li&gt;
+&lt;li&gt;对docker容器支持不够，且对docker及其服务的监测达不到安全发现的效果&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h3 id=&quot;auditxi-tong-zi-xi-tong&quot;&gt;audit系统子系统&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;audit.png&quot; alt=&quot;audit&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;auditd：审计守护程序负责将通过审计内核接口生成并由应用程序和系统活动触发的审计消息写入磁盘。&lt;&#x2F;li&gt;
+&lt;li&gt;auditctl：控制审计接口的日志生成参数和内核设置，以及用于确定要跟踪哪些事件的规则集&lt;&#x2F;li&gt;
+&lt;li&gt;aureport：创建自定义报告&lt;&#x2F;li&gt;
+&lt;li&gt;ausearch：搜索审计日志中的特定的事件&lt;&#x2F;li&gt;
+&lt;li&gt;audispd：通知其他应用程序，而不是将其写入磁盘上的审计日志中&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;ke-ti-dai-de-5chong-ji-zhu-bi-jiao&quot;&gt;可替代的5种技术比较&lt;&#x2F;h3&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;发布年份&lt;&#x2F;th&gt;&lt;th&gt;采集框架&lt;&#x2F;th&gt;&lt;th&gt;性能&lt;&#x2F;th&gt;&lt;th&gt;可编程控制&lt;&#x2F;th&gt;&lt;th&gt;稳定性&lt;&#x2F;th&gt;&lt;th&gt;内置于内核&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;2004&lt;&#x2F;td&gt;&lt;td&gt;Linux Audit&lt;&#x2F;td&gt;&lt;td&gt;差&lt;&#x2F;td&gt;&lt;td&gt;否&lt;&#x2F;td&gt;&lt;td&gt;高&lt;&#x2F;td&gt;&lt;td&gt;是&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;2009&lt;&#x2F;td&gt;&lt;td&gt;SystemTap&lt;&#x2F;td&gt;&lt;td&gt;良&lt;&#x2F;td&gt;&lt;td&gt;是&lt;&#x2F;td&gt;&lt;td&gt;低&lt;&#x2F;td&gt;&lt;td&gt;否&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;2006&lt;&#x2F;td&gt;&lt;td&gt;LTTng&lt;&#x2F;td&gt;&lt;td&gt;良&lt;&#x2F;td&gt;&lt;td&gt;否&lt;&#x2F;td&gt;&lt;td&gt;低&lt;&#x2F;td&gt;&lt;td&gt;否&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;2009&lt;&#x2F;td&gt;&lt;td&gt;Perf&#x2F;ftrace&lt;&#x2F;td&gt;&lt;td&gt;优&lt;&#x2F;td&gt;&lt;td&gt;否&lt;&#x2F;td&gt;&lt;td&gt;高&lt;&#x2F;td&gt;&lt;td&gt;是&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;2014&lt;&#x2F;td&gt;&lt;td&gt;BPF&lt;&#x2F;td&gt;&lt;td&gt;优&lt;&#x2F;td&gt;&lt;td&gt;是&lt;&#x2F;td&gt;&lt;td&gt;高&lt;&#x2F;td&gt;&lt;td&gt;是&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;h3 id=&quot;xing-neng-di-de-yuan-yin&quot;&gt;性能低的原因&lt;&#x2F;h3&gt;
+&lt;p&gt;Audit独立于kprobe、tracepoint之外的数据源，通过syscall和文件操作等内核源码上插入自定义的钩子函数实现监控，于2004年加入内核，相比于其他技术性能差&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;bpfji-zhu-de-you-shi&quot;&gt;BPF技术的优势&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;稳定：通过验证器，可防止错误引起的内核崩溃&lt;&#x2F;li&gt;
+&lt;li&gt;免安装：无需安装，可动态加载和卸载&lt;&#x2F;li&gt;
+&lt;li&gt;可编程控制：支持开发者插入自定义的代码逻辑&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;bpfde-lie-shi&quot;&gt;BPF的劣势&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;需要高版本的Linux内核，V3.x版本功能不全，V2.x无BPF支持。&lt;&#x2F;li&gt;
+&lt;li&gt;低版本Linux使用原有audit或perf等实现&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;yong-bpfti-dai-auditde-fang-an&quot;&gt;用BPF替代Audit的方案&lt;&#x2F;h3&gt;
+&lt;ol&gt;
+&lt;li&gt;使用BPF实现已有linux audit子系统功能。实现细节见下一节&lt;&#x2F;li&gt;
+&lt;li&gt;根据系统版本选择安装，老系统使用原有audit或perf，V4.x及以上系统使用BPF&lt;&#x2F;li&gt;
+&lt;li&gt;提供自监测系统，监控和配置性能指标，超过指标后，执行对应缓解措施&lt;&#x2F;li&gt;
+&lt;li&gt;提供实时通知机制，遇到配置项，通知其他接入系统协同完成对应缓解措施&lt;&#x2F;li&gt;
+&lt;li&gt;提供docker内监测和多docker间聚合事件能力，尤其是cgroup和网络等事件，增强docker的审计功能&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h3 id=&quot;bpfdui-linux-auditzi-xi-tong-shi-xian-xi-jie&quot;&gt;BPF对linux audit子系统实现细节&lt;&#x2F;h3&gt;
+&lt;pre style=&quot;background-color:#f9f9f9;color:#111111;&quot;&gt;&lt;code&gt;&lt;span&gt;                   Agent        &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;策略下发  |  事件聚合 |   通知协同  |  性能监测 &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                    BPF        &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    Ring Buffer ↑    |     ↓ BPF Map    &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;         System call | syscall 系统调用    挂载点&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;     VFS&#x2F;File system | 文件操作    挂载点&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  硬件驱动        &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;ol&gt;
+&lt;li&gt;针对audit的监控syscall和文件操作，BPF也增加相同接入监控&lt;&#x2F;li&gt;
+&lt;li&gt;Agent通过BPF map设置配置策略到BPF驱动，动态管控监控行为&lt;&#x2F;li&gt;
+&lt;li&gt;通过RingBuffer将BPF驱动实时发送事件到监控应用agent&lt;&#x2F;li&gt;
+&lt;li&gt;Agent分成4部分策略下发、事件聚合、通知协同、性能监测&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h3 id=&quot;zhu-ji-shen-ji-xi-tong-liu-cheng&quot;&gt;主机审计系统流程&lt;&#x2F;h3&gt;
+&lt;pre style=&quot;background-color:#f9f9f9;color:#111111;&quot;&gt;&lt;code&gt;&lt;span&gt;                  ↓&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                策略下发&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;在后台服务中，管理员配置设计策略并下发&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↓&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    主机agent接收策略，写入BPF map&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↓&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        主机BPF驱动执行策略&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↓&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;BPF驱动收集系统调用syscal和文件系统操作事件&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre style=&quot;background-color:#f9f9f9;color:#111111;&quot;&gt;&lt;code&gt;&lt;span&gt;                事件聚合&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;在后台服务中，聚合分类这些事件&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↑&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;在后台服务中，收集多台主机上报的审计事件&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↑&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        由agent上报发送给后台服务&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↑&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            事件内容写入Ring Buffer&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↑&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;由BPF驱动收集系统调用syscal和文件系统操作事件&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↑&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        主机agent根据下发策略要求&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre style=&quot;background-color:#f9f9f9;color:#111111;&quot;&gt;&lt;code&gt;&lt;span&gt;                通知协同&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;将聚合分类安全事件通知其他安全服务，如威胁狩猎分析&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↓&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        其他安全服务生成对应的安全策略&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↓&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        将安全策略通知系统审计服务&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↓&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    优化更新主机审计系统自身的安全策略&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre style=&quot;background-color:#f9f9f9;color:#111111;&quot;&gt;&lt;code&gt;&lt;span&gt;                性能监测&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    主机agent采集主机自身性能指标&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↓&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    根据下发策略扩大或减小监测挂载点&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                  ↓&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    动态控制审计系统的对系统的负荷&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;sheng-ji-ti-huan-hou-de-you-yi-xiao-guo&quot;&gt;升级替换后的有益效果&lt;&#x2F;h3&gt;
+&lt;ol&gt;
+&lt;li&gt;高性能的收集安全信息&lt;&#x2F;li&gt;
+&lt;li&gt;可动态加载的探针，动态分配系统开销&lt;&#x2F;li&gt;
+&lt;li&gt;可兼容新旧系统的技术栈，适应老系统(老系统不支持新的技术)&lt;&#x2F;li&gt;
+&lt;li&gt;可实时发现安全威胁，及时上报或紧急处理&lt;&#x2F;li&gt;
+&lt;li&gt;可以与系统其他安全服务协同&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+</content>
+	</entry>
+	<entry xml:lang="en">
+		<title>终端资产的全面发现管理</title>
+		<published>2022-04-13T00:00:00+00:00</published>
+		<updated>2022-04-13T00:00:00+00:00</updated>
+		<link href="https://jimluo.github.io/asset-discovery/" type="text/html"/>
+		<id>https://jimluo.github.io/asset-discovery/</id>
+		<content type="html">&lt;p&gt;终端资产的全面清理发现和管理是精细化管理也是安全办公生产的前提，&lt;&#x2F;p&gt;
+&lt;p&gt;困难之处在于设备类型复杂(固定、移动、网络设备、摄像头、打印机等)，&lt;&#x2F;p&gt;
+&lt;p&gt;人员角色多变赋予设备自身权限及可见度变化，&lt;&#x2F;p&gt;
+&lt;p&gt;最后长时间使用，设备和人员的更替，再时间上追溯困难。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;wen-ti-zhong-dian-biao-xian-zai&quot;&gt;问题重点表现在&lt;&#x2F;h3&gt;
+&lt;p&gt;主流资产发现及管理系统，使用的技术，主动扫描和被动流量发现各自都有缺陷&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;主动扫描发现不了未开机和休眠资产设备&lt;&#x2F;li&gt;
+&lt;li&gt;被动流量分析发现不了数据未经过核心交换机的设备（因为被动流量分析的服务设备接在核心交换机上，见下图）&lt;&#x2F;li&gt;
+&lt;li&gt;被动流量分析发现不了分析前接入的设备&lt;&#x2F;li&gt;
+&lt;li&gt;设备资产间的在时间上的关系无法确定，也就不能评估出安全风险&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;常用技术名词概念&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;终端资产：用户单位的电脑。在安全业务上，用于对安全问题的物理定位，及时找到机器和操作人员&lt;&#x2F;li&gt;
+&lt;li&gt;ARP地址解析协议：根据IP地址获取物理mac地址的协议&lt;&#x2F;li&gt;
+&lt;li&gt;ARP表：交换机中IP与MAC地址对应关系缓存表&lt;&#x2F;li&gt;
+&lt;li&gt;SNMP OIDS：交换机和路由器中缓存的设备信息表&lt;&#x2F;li&gt;
+&lt;li&gt;NetFlow表：交换机和路由器中缓存的设备外联流量信息&lt;&#x2F;li&gt;
+&lt;li&gt;DHCP服务：动态分配IP地址给刚入网的设备，保留了所有入网设备的信息。每台设备使用的IP过期后，再定期续租申请。&lt;&#x2F;li&gt;
+&lt;li&gt;DNS服务：将域名解析为可以访问的IP，保留了终端设备的请求网络信息&lt;&#x2F;li&gt;
+&lt;li&gt;网络设备：交换机和路由器。其存有ARP表、路由表、SNMP OIDS信息，NetFlow表&lt;&#x2F;li&gt;
+&lt;li&gt;服务设备：DHCP服务和DNS服务等，其存有设备的网络和机器信息&lt;&#x2F;li&gt;
+&lt;li&gt;终端设备：电脑的设备制造商、操作系厂商、常用软件和使用时间上的规律&lt;&#x2F;li&gt;
+&lt;li&gt;主动扫描：轮询全网每一台终端，发起预制的网络请求，根据收到的响应判断终端的设备信息&lt;&#x2F;li&gt;
+&lt;li&gt;被动流量分析：镜像连接在核心交换机上，根据网络所有设备的流量信息，分析访问关系和部分设备信息&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h3 id=&quot;quan-mian-fa-xian-guan-li-de-gong-zuo-liu-cheng&quot;&gt;全面发现管理的工作流程&lt;&#x2F;h3&gt;
+&lt;h4 id=&quot;fa-xian&quot;&gt;发现&lt;&#x2F;h4&gt;
+&lt;p&gt;基于3种设备(网络设备、服务设备、终端设备)和2种行为(主动、被动)获取设备机器信息和网络连通信息。
+尤其是发生的时间和外联关系。持续监控设备的连接断开，获取实时信息而不中断业务。&lt;&#x2F;p&gt;
+&lt;p&gt;通过网络设备信息，整合主动与被动发现信息&lt;&#x2F;p&gt;
+&lt;p&gt;通过服务信息，整合流量与设备信息&lt;&#x2F;p&gt;
+&lt;p&gt;其特点是&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;发现未开机和休眠资产设备&lt;&#x2F;li&gt;
+&lt;li&gt;发现网络流量未经过核心交换机的设备&lt;&#x2F;li&gt;
+&lt;li&gt;发现分析前接入的设备&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;2种行为\3种设备&lt;&#x2F;th&gt;&lt;th&gt;网络设备&lt;&#x2F;th&gt;&lt;th&gt;服务设备&lt;&#x2F;th&gt;&lt;th&gt;终端设备&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;主动扫描和获取(范围大，信息多)&lt;&#x2F;td&gt;&lt;td&gt;设备外联时间和位置&lt;&#x2F;td&gt;&lt;td&gt;设备的网络和机器信息&lt;&#x2F;td&gt;&lt;td&gt;运行在设备的代理(如杀毒软件）&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;获取全面的机器信息，可选择不使用，不影响用户业务&lt;&#x2F;td&gt;&lt;td&gt;被动监控(实时性高)&lt;&#x2F;td&gt;&lt;td&gt;全网流量信息&lt;&#x2F;td&gt;&lt;td&gt;设备的连接和断开&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;h4 id=&quot;fa-xian-yuan-li&quot;&gt;发现原理：&lt;&#x2F;h4&gt;
+&lt;ol&gt;
+&lt;li&gt;主动获取网络设备和服务设备中存在的IP设备及流量信息，并整合两者信息，全时间段的信息&lt;&#x2F;li&gt;
+&lt;li&gt;被动获取全网流量信息，当前时间段的信息&lt;&#x2F;li&gt;
+&lt;li&gt;比较找出存在于主动信息#1中而不存在于被动信息#2中的设备&lt;&#x2F;li&gt;
+&lt;li&gt;分析这些设备流量的发生时间&lt;&#x2F;li&gt;
+&lt;li&gt;判断发生时间暂时的，只是最近没有出现，是未开机和休眠&lt;&#x2F;li&gt;
+&lt;li&gt;判断发生时间是曾经有过，现在一直没有出现，是以前接入，现在可能已不存在&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h4 id=&quot;fen-lei&quot;&gt;分类&lt;&#x2F;h4&gt;
+&lt;p&gt;按照设备类型、操作系统、时间分类，并在时间上聚合不同设备间的网络访问关系，丰富上下文&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;ping-gu&quot;&gt;评估&lt;&#x2F;h4&gt;
+&lt;ul&gt;
+&lt;li&gt;识别安全风险，评估合规达标程度&lt;&#x2F;li&gt;
+&lt;li&gt;最终获得对网络操作风险的态势感知，使用全面的上下文评估策略遵从性和设备安全姿态&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;zong-jie-qi-te-dian&quot;&gt;总结其特点&lt;&#x2F;h3&gt;
+&lt;ol&gt;
+&lt;li&gt;更全面地发现资产
+&lt;ul&gt;
+&lt;li&gt;发现未开机和休眠资产设备&lt;&#x2F;li&gt;
+&lt;li&gt;网络流量未经过核心交换机的设备&lt;&#x2F;li&gt;
+&lt;li&gt;发现分析前接入的设备&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;更易于分类，基于空间和时间的上下文&lt;&#x2F;li&gt;
+&lt;li&gt;更准确地评估合规的达标度，识别安全风险&lt;&#x2F;li&gt;
+&lt;li&gt;不中断不影响用户业务&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+</content>
+	</entry>
 	<entry xml:lang="en">
 		<title>基于Rust和BPF技术的网络TCP水印</title>
 		<published>2022-03-23T00:00:00+00:00</published>
@@ -635,12 +832,12 @@ libbpf_common.h&lt;&#x2F;p&gt;
 &lt;li&gt;ipv4 parse and verify, host pkt pass&lt;&#x2F;li&gt;
 &lt;li&gt;tcp parse and verify
 &lt;ol&gt;
-&lt;li&gt;tcp options filter, find and save epptoken to hashmap&lt;&#x2F;li&gt;
+&lt;li&gt;tcp options filter, find and save token to hashmap&lt;&#x2F;li&gt;
 &lt;&#x2F;ol&gt;
 &lt;&#x2F;li&gt;
 &lt;li&gt;os filter&lt;&#x2F;li&gt;
 &lt;li&gt;http parse and filter os&lt;&#x2F;li&gt;
-&lt;li&gt;lookup hashmap of epp token&lt;&#x2F;li&gt;
+&lt;li&gt;lookup hashmap of token&lt;&#x2F;li&gt;
 &lt;li&gt;http parse and verify &lt;&#x2F;li&gt;
 &lt;li&gt;redirect http  本机debug时关闭&lt;&#x2F;li&gt;
 &lt;&#x2F;ol&gt;
@@ -748,7 +945,7 @@ libbpf_common.h&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;serverwang-luo-shou-fa-xi-jie&quot;&gt;server网络收发细节&lt;&#x2F;h2&gt;
 &lt;ul&gt;
 &lt;li&gt;服务端监听在67端口上，收到client请求后解析有icmp的信息，响应给client容错时要处理下，里面有网卡接口可以使用&lt;&#x2F;li&gt;
-&lt;li&gt;对普通请求，响应原路2层ethernet返回。其他非正常消息在3层ip上icmp返回错误提醒&lt;&#x2F;li&gt;
+&lt;li&gt;对普通请求，自构建pcap响应原路返回。其他非正常消息在3层ip上icmp返回错误提醒&lt;&#x2F;li&gt;
 &lt;li&gt;具体的发送使用libpacp，发送前要去掉自定义链路层的协议头部&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 &lt;h2 id=&quot;optionschong-xi-jie&quot;&gt;options种细节&lt;&#x2F;h2&gt;

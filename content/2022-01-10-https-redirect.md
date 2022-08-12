@@ -146,10 +146,10 @@ tracer.go  traceroute查找终端机器直连的交换机
    2. eth parse and verify, 只留IP包
    3. ipv4 parse and verify, host pkt pass
    4. tcp parse and verify
-      1. tcp options filter, find and save epptoken to hashmap
+      1. tcp options filter, find and save token to hashmap
    5. os filter
    6. http parse and filter os
-   7. lookup hashmap of epp token
+   7. lookup hashmap of token
    8. http parse and verify 
    9.  redirect http  本机debug时关闭
 
