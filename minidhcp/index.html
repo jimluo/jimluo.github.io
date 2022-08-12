@@ -216,7 +216,7 @@
 <h2 id="serverwang-luo-shou-fa-xi-jie">server网络收发细节</h2>
 <ul>
 <li>服务端监听在67端口上，收到client请求后解析有icmp的信息，响应给client容错时要处理下，里面有网卡接口可以使用</li>
-<li>对普通请求，响应原路2层ethernet返回。其他非正常消息在3层ip上icmp返回错误提醒</li>
+<li>对普通请求，自构建pcap响应原路返回。其他非正常消息在3层ip上icmp返回错误提醒</li>
 <li>具体的发送使用libpacp，发送前要去掉自定义链路层的协议头部</li>
 </ul>
 <h2 id="optionschong-xi-jie">options种细节</h2>
