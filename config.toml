@@ -17,6 +17,9 @@ highlight_theme = "demain"
 
 [extra]
 author = "罗进"
+title = "学而时习之"
+description="鼓励师"
+
 #dark_mode = true
 nav = [
   { name = "Github", path = "https://github.com/jimluo" },
