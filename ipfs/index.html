@@ -82,6 +82,8 @@
   
 
   
+    <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;forest&#x2F;">
+  
 
   
     <link rel="prerender"  href="https://jimluo.github.io/tags/linux/">
@@ -396,6 +398,45 @@
 <p><img src="../images/ipfs/ipld.png" alt="IPLD" /></p>
 <p>原理借鉴git</p>
 <p>动手实验下，一个文件的<a href="https://dag.ipfs.io/">IPLD DAG化</a></p>
+<h2 id="duan-dao-duan-chuan-tou-da-dong">端到端穿透打洞</h2>
+<p>两台不同网络下的电脑互通，可能中间隔了一个或多个NAT，我们常觉得有了对方的ip直接connect就可以了，tcp的syn发过去对方一定能回，结果等来的是超时，原因是电脑不知道对方看到自己的ip不是自己认为的ip，就是因为NAT转换的缘故，NAT可以基于port或ip将内部多个ip转到外部的一个ip。</p>
+<p><img src="../images/ipfs/NAT-Common.png" alt="NAT" /></p>
+<p>libp2p中实现端到端穿透NAT的实现在autonat.rs中，有3次不同的尝试</p>
+<ol>
+<li>先直连检测能否成功</li>
+<li>不行就广播外部的电脑朋友告诉自己的外部ip，然后两台电脑打洞，告诉NAT缓存自己和对方的信息，两台NAT之间互通后就能让两台电脑互通</li>
+<li>最后一招，用两台电脑都认识的第3方电脑做中继</li>
+</ol>
+<p>代码里流程</p>
+<pre data-lang="rs" style="background-color:#f9f9f9;color:#111111;" class="language-rs "><code class="language-rs" data-lang="rs"><span style="color:#8e908c;">// client的swarm轮询每台电脑，根据反馈升级行为</span><span>
+</span><span>
+</span><span style="color:#8959a8;">loop </span><span>{</span><span>
+</span><span>    </span><span style="color:#8959a8;">match</span><span> swarm.</span><span style="color:#4271ae;">select_next_some</span><span>().await {</span><span>
+</span><span>        SwarmEvent::NewListenAddr { address, </span><span style="color:#3e999f;">.. </span><span>} </span><span style="color:#3e999f;">=&gt; ...</span><span>,</span><span>
+</span><span>        SwarmEvent::Behaviour(event) </span><span style="color:#3e999f;">=&gt; ...</span><span>,</span><span>
+</span><span>    }</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span>Stream.poll_next</span><span>
+</span><span>  </span><span style="color:#4271ae;">poll_next_event</span><span>(</span><span>
+</span><span>    </span><span style="color:#8959a8;">match</span><span> this.pool.</span><span style="color:#4271ae;">poll</span><span>(cx) </span><span>
+</span><span>        Behaviour</span><span>
+</span><span>          </span><span style="color:#4271ae;">handle_pool_event</span><span>(</span><span>
+</span><span>              .</span><span style="color:#4271ae;">inject_connection_established</span><span>(</span><span>
+</span><span>
+</span><span style="color:#8e908c;">// NetworkBehaviourEventProcess.inject流入到 poll函数的最前面</span><span>
+</span><span>#[</span><span style="color:#c82728;">derive</span><span>(NetworkBehaviour)]</span><span>
+</span><span>#[</span><span style="color:#c82728;">behaviour</span><span>(event_process </span><span style="color:#3e999f;">=</span><span> true)]</span><span>
+</span><span style="color:#8959a8;">struct </span><span>MyBehaviour {</span><span>
+</span><span>    </span><span style="color:#c82728;">floodsub</span><span>: Floodsub,</span><span>
+</span><span>    </span><span style="color:#c82728;">mdns</span><span>: Mdns,</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span>NetworkBehaviourAction.handle_behaviour_event</span><span>
+</span><span>  </span><span style="color:#8959a8;">match </span><span>{Dial,NotifyHandler,ReportObservedAddr,CloseConnectio}</span><span>
+</span></code></pre>
+<p>还有一个开源的端到端加密通讯库可参考
+<a href="https://github.com/build-trust/ockam">ockam</a></p>
 
   </div>
 
@@ -412,6 +453,11 @@
       </div>
     
 
+    
+      <div class="link">
+        Next <br />
+        <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;forest&#x2F;">Forest的daemon、cli流程和钱包结构</a>
+      </div>
     
 
   </div>

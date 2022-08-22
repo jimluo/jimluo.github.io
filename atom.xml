@@ -5,8 +5,132 @@
 	<link href="https://jimluo.github.io/atom.xml" rel="self" type="application/atom+xml"/>
   <link href="https://jimluo.github.io/"/>
 	<generator uri="https://www.getzola.org/">Zola</generator>
-	<updated>2022-06-18T00:00:00+00:00</updated>
+	<updated>2022-07-05T00:00:00+00:00</updated>
 	<id>https://jimluo.github.io/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Forest的daemon、cli流程和钱包结构</title>
+		<published>2022-07-05T00:00:00+00:00</published>
+		<updated>2022-07-05T00:00:00+00:00</updated>
+		<link href="https://jimluo.github.io/forest/" type="text/html"/>
+		<id>https://jimluo.github.io/forest/</id>
+		<content type="html">&lt;p&gt;去年了解过Filecoin，对其Go版的实现lotus运行和分析过，源于对IPFS的兴趣。&lt;&#x2F;p&gt;
+&lt;p&gt;今年学习零知识证明时，简单过了下ref_fvm，同时分析Filecoin的Rust版forest时，提交2个小PR，都是关于wallet的。顺带记录了些学习笔记如下。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;qian-bao-de-gong-neng-xu-qiu&quot;&gt;钱包的功能需求&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;挣钱：新区块的签名，转账时签名&lt;&#x2F;li&gt;
+&lt;li&gt;收钱：老区块的验签，接收转账时验签&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;qian-bao-gong-neng-de-yue-shu&quot;&gt;钱包功能的约束&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;多设备：导入多出在设备之间&lt;&#x2F;li&gt;
+&lt;li&gt;多账户：增删改查多个账户&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;zhang-hu-de-ji-ben-jie-gou&quot;&gt;账户的基本结构&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;私钥：分BLS聚合签和Secp256k1椭圆算法签名&lt;&#x2F;li&gt;
+&lt;li&gt;公钥：对外提供的标识&lt;&#x2F;li&gt;
+&lt;li&gt;地址：可视文本化的公钥&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;walletjie-gou&quot;&gt;wallet结构&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Wallet { keys&amp;lt;Address, Key&amp;gt;, keystore }&lt;&#x2F;li&gt;
+&lt;li&gt;Key { KeyInfo, public_key, address }&lt;&#x2F;li&gt;
+&lt;li&gt;KeyInfo { key_type, private_key }&lt;&#x2F;li&gt;
+&lt;li&gt;Address { Net(main&#x2F;test), payload(ID&#x2F;Secp256k1&#x2F;Actor&#x2F;BLS) }&lt;&#x2F;li&gt;
+&lt;li&gt;KeyStore { key_info&amp;lt;addr, KeyInfo&amp;gt;, persistence, encryption }
+&lt;img src=&quot;..&#x2F;images&#x2F;wallet.png&quot; alt=&quot;key_mangement&quot; &#x2F;&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;wallet-zi-ming-ling-de-liu-cheng&quot;&gt;wallet 子命令的流程&lt;&#x2F;h3&gt;
+&lt;pre style=&quot;background-color:#f9f9f9;color:#111111;&quot;&gt;&lt;code&gt;&lt;span&gt;&amp;gt; forest [wallet list | state lookup]&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;解析参数        *_cmd.rs [wallet_cmd | state_cmd ]&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;构造jsonrpc参数 *_opt.rs [wallet_opt | state_opt ]&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;call() -&amp;gt; jsonrpc: &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  reqest object   { version, method, params, id }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  response object { version, result, error, id }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;key_mangement&#x2F;wallet.rs&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  list_addr() &#x2F;&#x2F; 从KeyStore或state里获取&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;改动的部分是参照lotus再list时能输出除Address外，还有此Address的Balance、Nonce、Default&lt;&#x2F;p&gt;
+&lt;p&gt;将原来的list调用组合了对KeyStore的获取和state中的Balance的获取，但因json API中输出类型都是一个String，暂且去掉了Nonce。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;huan-you-1ge-bugzai-fen-xi-zhong&quot;&gt;还有1个bug在分析中&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;有如下会输出错乱&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;pre data-lang=&quot;log&quot; style=&quot;background-color:#f9f9f9;color:#111111;&quot; class=&quot;language-log &quot;&gt;&lt;code class=&quot;language-log&quot; data-lang=&quot;log&quot;&gt;&lt;span&gt; 2022-0X INFO  forest::daemon         &amp;gt; Using network :: testnetnet&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt; 2022-0X INFO  genesis                &amp;gt; Importing chain from snapshot&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt; 2022-0X INFO  genesis                &amp;gt; Reading file...&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Importing snapshot 3.34 GB &#x2F; 3.91 GB [===============&amp;gt;--------&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Importing snapshot 3.34 GB &#x2F; 3.91 GB [======================================-] 85.73 % 2.35&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Importing snapshot 3.39 GB &#x2F; 3.91 GB [=&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Importing snapshot 3.&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;ImportingScanning blockchain 1079961 &#x2F; 1086061 [============] 99.44 % 116.94&#x2F;s 52s  &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt; 2022-0X INFO  genesis                &amp;gt; Accepting [Cid&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;ul&gt;
+&lt;li&gt;也有bad_block引起的循环不停的Bootstrapping&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;pre data-lang=&quot;log&quot; style=&quot;background-color:#f9f9f9;color:#111111;&quot; class=&quot;language-log &quot;&gt;&lt;code class=&quot;language-log&quot; data-lang=&quot;log&quot;&gt;&lt;span&gt;ERROR chain_sync::chain_muxer   &amp;gt; Bootstrapping failed, re-evaluating the network head to retry the bootstrap. Error = &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt; TipsetRangeSyncer(Validation(&amp;quot;Validation error: Consensus error: StateManager error: failed to find state tree xxx &amp;quot;))&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;daemonde-qi-dong-liu-cheng&quot;&gt;daemon的启动流程&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;start
+&lt;ul&gt;
+&lt;li&gt;read keystore&lt;&#x2F;li&gt;
+&lt;li&gt;start promithus&lt;&#x2F;li&gt;
+&lt;li&gt;print token&lt;&#x2F;li&gt;
+&lt;li&gt;init db&lt;&#x2F;li&gt;
+&lt;li&gt;chain_store, publish, set_genesis&lt;&#x2F;li&gt;
+&lt;li&gt;genesis, tipset, read_genesis_head&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;libp2p&lt;&#x2F;li&gt;
+&lt;li&gt;mpoll&lt;&#x2F;li&gt;
+&lt;li&gt;consensus&lt;&#x2F;li&gt;
+&lt;li&gt;chainMuxer&lt;&#x2F;li&gt;
+&lt;li&gt;p2p&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h4 id=&quot;qi-zhong-zhu-yao-de-task&quot;&gt;其中主要的task&lt;&#x2F;h4&gt;
+&lt;ul&gt;
+&lt;li&gt;mining&lt;&#x2F;li&gt;
+&lt;li&gt;prometheus&lt;&#x2F;li&gt;
+&lt;li&gt;p2p&lt;&#x2F;li&gt;
+&lt;li&gt;rpc&lt;&#x2F;li&gt;
+&lt;li&gt;sync: chainMuxer&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h5 id=&quot;bad-block-check&quot;&gt;bad_block check&lt;&#x2F;h5&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#f9f9f9;color:#111111;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;❯&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; .&#x2F;target&#x2F;release&#x2F;forest&lt;&#x2F;span&gt;&lt;span style=&quot;color:#f07219;&quot;&gt; --import-snapshot&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; .&#x2F;lotus_cali_snapshot_2022_07_01_high_1086060.car&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;WARN&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;  forest::cli &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; No configurations found, using defaults.&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;INFO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;  forest::daemon &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Starting Forest daemon, version v0.2.2&#x2F;alpha&#x2F;2777962b&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;INFO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;  forest_libp2p::service &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Recovered libp2p keypair from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#839c00;&quot;&gt;&amp;quot;&#x2F;root&#x2F;.local&#x2F;share&#x2F;forest&#x2F;libp2p&#x2F;keypair&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Enter&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; the keystore passphrase:&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;INFO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;  forest::daemon         &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Prometheus server started at 127.0.0.1:6116&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;INFO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;  forest::daemon         &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Admin token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;INFO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;  genesis                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Initialized genesis: BlockHeader: Cid(bafy2bzacecnamqgqmifpluoeldx7zzglxcljo6oja4vrmtj7432rphldpdmm2&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;INFO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;  forest::daemon         &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Using network :: testnetnet&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;INFO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;  genesis                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Importing chain from snapshot&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;INFO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;  genesis                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Reading file...&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Importing&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; snapshot 3.34 GB &#x2F; 3.91 GB [===============&lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;--------&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Importing&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; snapshot 3.34 GB &#x2F; 3.91 GB &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;======================================-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 85.73 % 2.35&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Importing&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; snapshot 3.39 GB &#x2F; 3.91 GB [=&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Importing&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; snapshot 3.&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;ImportingScanning&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; blockchain 1079961 &#x2F; 1086061 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;============&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; 99.44 % 116.94&#x2F;s 52s  &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;INFO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;  genesis                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Accepting &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;Cid(bafy2bzaced3lqekadp5wwveksrfq3ulh43eq36gtgqqdsksfqfarb7aujncne), Cid(bafy2bzacedizgfupmw3loypx2dcczgaykmymzrnovupegthmwnbsslfsov4ua), Cid(bafy2bzaced4jfbzyol4qft4h4tkacco77z6aa2m4qkm573xanmyv3jdjier2m)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; as new head.&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;ERROR&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; forest::cli            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Error: Database too old. Download a snapshot from a trusted source and import with&lt;&#x2F;span&gt;&lt;span style=&quot;color:#f07219;&quot;&gt; --import-snapshot&lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;file&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;]&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre data-lang=&quot;sh&quot; style=&quot;background-color:#f9f9f9;color:#111111;&quot; class=&quot;language-sh &quot;&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Starting&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Forest daemon&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;Recovered&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; libp2p keypair from &lt;&#x2F;span&gt;&lt;span style=&quot;color:#839c00;&quot;&gt;&amp;quot;&#x2F;root&#x2F;.local&#x2F;share&#x2F;forest&#x2F;libp2p&#x2F;keypair&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;...&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;chain_muxer:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Bootstrapping failed, re-evaluating the network head to retry the bootstrap. Error = TipsetRangeSyncer(Validation(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#839c00;&quot;&gt;&amp;quot;Validation error: Consensus error: StateManager error: failed to find state tree bafy2bzacebbm4ympalhar75tlczmwpg3xkrh5txt56dluvam65it334zg5gke&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;))&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;chain_muxer:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt; Bootstrapping failed, 重复尝试并不停报错&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;还在分析中，抽空攒个大块时间处理&lt;&#x2F;p&gt;
+</content>
+	</entry>
 	<entry xml:lang="en">
 		<title>IPFS与web2.0的简单比较</title>
 		<published>2022-06-18T00:00:00+00:00</published>
@@ -235,6 +359,45 @@
 &lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;ipfs&#x2F;ipld.png&quot; alt=&quot;IPLD&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;原理借鉴git&lt;&#x2F;p&gt;
 &lt;p&gt;动手实验下，一个文件的&lt;a href=&quot;https:&#x2F;&#x2F;dag.ipfs.io&#x2F;&quot;&gt;IPLD DAG化&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;duan-dao-duan-chuan-tou-da-dong&quot;&gt;端到端穿透打洞&lt;&#x2F;h2&gt;
+&lt;p&gt;两台不同网络下的电脑互通，可能中间隔了一个或多个NAT，我们常觉得有了对方的ip直接connect就可以了，tcp的syn发过去对方一定能回，结果等来的是超时，原因是电脑不知道对方看到自己的ip不是自己认为的ip，就是因为NAT转换的缘故，NAT可以基于port或ip将内部多个ip转到外部的一个ip。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;..&#x2F;images&#x2F;ipfs&#x2F;NAT-Common.png&quot; alt=&quot;NAT&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;libp2p中实现端到端穿透NAT的实现在autonat.rs中，有3次不同的尝试&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;先直连检测能否成功&lt;&#x2F;li&gt;
+&lt;li&gt;不行就广播外部的电脑朋友告诉自己的外部ip，然后两台电脑打洞，告诉NAT缓存自己和对方的信息，两台NAT之间互通后就能让两台电脑互通&lt;&#x2F;li&gt;
+&lt;li&gt;最后一招，用两台电脑都认识的第3方电脑做中继&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;代码里流程&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rs&quot; style=&quot;background-color:#f9f9f9;color:#111111;&quot; class=&quot;language-rs &quot;&gt;&lt;code class=&quot;language-rs&quot; data-lang=&quot;rs&quot;&gt;&lt;span style=&quot;color:#8e908c;&quot;&gt;&#x2F;&#x2F; client的swarm轮询每台电脑，根据反馈升级行为&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;loop &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;match&lt;&#x2F;span&gt;&lt;span&gt; swarm.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;select_next_some&lt;&#x2F;span&gt;&lt;span&gt;().await {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        SwarmEvent::NewListenAddr { address, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;.. &lt;&#x2F;span&gt;&lt;span&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;=&amp;gt; ...&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        SwarmEvent::Behaviour(event) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;=&amp;gt; ...&lt;&#x2F;span&gt;&lt;span&gt;,&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;Stream.poll_next&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;poll_next_event&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;match&lt;&#x2F;span&gt;&lt;span&gt; this.pool.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;poll&lt;&#x2F;span&gt;&lt;span&gt;(cx) &lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        Behaviour&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;handle_pool_event&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;              .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#4271ae;&quot;&gt;inject_connection_established&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8e908c;&quot;&gt;&#x2F;&#x2F; NetworkBehaviourEventProcess.inject流入到 poll函数的最前面&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span&gt;(NetworkBehaviour)]&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;behaviour&lt;&#x2F;span&gt;&lt;span&gt;(event_process &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3e999f;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; true)]&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;MyBehaviour {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;floodsub&lt;&#x2F;span&gt;&lt;span&gt;: Floodsub,&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c82728;&quot;&gt;mdns&lt;&#x2F;span&gt;&lt;span&gt;: Mdns,&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;NetworkBehaviourAction.handle_behaviour_event&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8959a8;&quot;&gt;match &lt;&#x2F;span&gt;&lt;span&gt;{Dial,NotifyHandler,ReportObservedAddr,CloseConnectio}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;还有一个开源的端到端加密通讯库可参考
+&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;build-trust&#x2F;ockam&quot;&gt;ockam&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 </content>
 	</entry>
 	<entry xml:lang="en">
