@@ -78,9 +78,7 @@
     
      
   
-    <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;tags&#x2F;blockchain&#x2F;" />
-  
-    <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;tags&#x2F;linux&#x2F;" />
+    <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;forest&#x2F;" />
   
 
   </head>
@@ -99,16 +97,42 @@
     
     <main>
     
-  <h1 class="taxonomy-name">tags</h1>
+  <h1>1 pages tagged with "Blockchain"</h1>
   <div class="taxonomy-container">
     
-      <div class="term">
-       <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;tags&#x2F;blockchain&#x2F;">Blockchain (1)</a>
-      </div>
-    
-      <div class="term">
-       <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;tags&#x2F;linux&#x2F;">Linux (7)</a>
-      </div>
+      
+  <div class="post-preview">
+    <h3 class="post-title"><a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;forest&#x2F;">Forest的daemon、cli流程和钱包结构</a></h3>
+    <small>
+      July 05, 2022 - 708 words - 4 mins
+    </small>
+    <div class="summary">
+      
+        去年了解过Filecoin，对其Go版的实现lotus运行和分析过，源于对IPFS的兴趣。
+今年学习零知识证明时，简单过了下ref_fvm，同时分析Filecoin的Rust版forest时，提交2个小PR，都是关于wallet的。顺带记录了些学习笔记如下。
+钱包的功能需求
+
+挣钱：新区块的签名，转账时签名
+收钱：老区块的验签，接收转账时验签
+
+钱包功能的约束
+
+多设备：导入多出在设备之间
+多账户：增删改查多个账户
+
+账户的基本结构
+
+私钥：分BLS聚合签和Secp256k1椭圆算法签名
+公钥：对外提供的标识
+地址：可视文本化的公钥
+
+wallet结构
+
+Wallet { keys&amp;lt;Ad…
+      <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;forest&#x2F;">read more</a>
+    </div>
+  </div>
+
     
   </div>
 
