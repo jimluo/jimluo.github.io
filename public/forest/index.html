@@ -176,67 +176,20 @@
   <div>
     <p>去年了解过Filecoin，对其Go版的实现lotus运行和分析过，源于对IPFS的兴趣。</p>
 <p>今年学习零知识证明时，简单过了下ref_fvm，同时分析Filecoin的Rust版forest时，提交2个小PR，都是关于wallet的。顺带记录了些学习笔记如下。</p>
-<h3 id="qian-bao-de-gong-neng-xu-qiu">钱包的功能需求</h3>
-<ul>
-<li>挣钱：新区块的签名，转账时签名</li>
-<li>收钱：老区块的验签，接收转账时验签</li>
-</ul>
-<h3 id="qian-bao-gong-neng-de-yue-shu">钱包功能的约束</h3>
-<ul>
-<li>多设备：导入多出在设备之间</li>
-<li>多账户：增删改查多个账户</li>
-</ul>
-<h3 id="zhang-hu-de-ji-ben-jie-gou">账户的基本结构</h3>
-<ul>
-<li>私钥：分BLS聚合签和Secp256k1椭圆算法签名</li>
-<li>公钥：对外提供的标识</li>
-<li>地址：可视文本化的公钥</li>
-</ul>
-<h3 id="walletjie-gou">wallet结构</h3>
-<ul>
-<li>Wallet { keys&lt;Address, Key&gt;, keystore }</li>
-<li>Key { KeyInfo, public_key, address }</li>
-<li>KeyInfo { key_type, private_key }</li>
-<li>Address { Net(main/test), payload(ID/Secp256k1/Actor/BLS) }</li>
-<li>KeyStore { key_info&lt;addr, KeyInfo&gt;, persistence, encryption }
-<img src="../images/wallet.png" alt="key_mangement" /></li>
-</ul>
-<h3 id="wallet-zi-ming-ling-de-liu-cheng">wallet 子命令的流程</h3>
-<pre style="background-color:#f9f9f9;color:#111111;"><code><span>&gt; forest [wallet list | state lookup]</span><span>
-</span><span>
-</span><span>解析参数        *_cmd.rs [wallet_cmd | state_cmd ]</span><span>
-</span><span>构造jsonrpc参数 *_opt.rs [wallet_opt | state_opt ]</span><span>
-</span><span>
-</span><span>call() -&gt; jsonrpc: </span><span>
-</span><span>  reqest object   { version, method, params, id }</span><span>
-</span><span>  response object { version, result, error, id }</span><span>
-</span><span>
-</span><span>key_mangement/wallet.rs</span><span>
-</span><span>  list_addr() // 从KeyStore或state里获取</span><span>
-</span></code></pre>
-<p>改动的部分是参照lotus再list时能输出除Address外，还有此Address的Balance、Nonce、Default</p>
-<p>将原来的list调用组合了对KeyStore的获取和state中的Balance的获取，但因json API中输出类型都是一个String，暂且去掉了Nonce。</p>
-<h2 id="huan-you-1ge-bugzai-fen-xi-zhong">还有1个bug在分析中</h2>
-<ul>
-<li>有如下会输出错乱</li>
-</ul>
-<pre data-lang="log" style="background-color:#f9f9f9;color:#111111;" class="language-log "><code class="language-log" data-lang="log"><span> 2022-0X INFO  forest::daemon         &gt; Using network :: testnetnet</span><span>
-</span><span> 2022-0X INFO  genesis                &gt; Importing chain from snapshot</span><span>
-</span><span> 2022-0X INFO  genesis                &gt; Reading file...</span><span>
-</span><span>Importing snapshot 3.34 GB / 3.91 GB [===============&gt;--------</span><span>
-</span><span>Importing snapshot 3.34 GB / 3.91 GB [======================================-] 85.73 % 2.35</span><span>
-</span><span>Importing snapshot 3.39 GB / 3.91 GB [=</span><span>
-</span><span>Importing snapshot 3.</span><span>
-</span><span>ImportingScanning blockchain 1079961 / 1086061 [============] 99.44 % 116.94/s 52s  </span><span>
-</span><span> 2022-0X INFO  genesis                &gt; Accepting [Cid</span><span>
-</span></code></pre>
-<ul>
-<li>也有bad_block引起的循环不停的Bootstrapping</li>
-</ul>
-<pre data-lang="log" style="background-color:#f9f9f9;color:#111111;" class="language-log "><code class="language-log" data-lang="log"><span>ERROR chain_sync::chain_muxer   &gt; Bootstrapping failed, re-evaluating the network head to retry the bootstrap. Error = </span><span>
-</span><span> TipsetRangeSyncer(Validation(&quot;Validation error: Consensus error: StateManager error: failed to find state tree xxx &quot;))</span><span>
-</span></code></pre>
-<h3 id="daemonde-qi-dong-liu-cheng">daemon的启动流程</h3>
+<p>forestd的目的很明确，为了充分验证lotus对spec实现的完整性和缺陷，可能是21年的那场<a href="https://www.8btc.com/media/6610800">&quot;双花&quot;</a>问题</p>
+<blockquote>
+<p>简单来说，就是人们对链的检查方式，这会呈现出消息被处理了两次的样子，进而产生了误解。
+具体来说，就是部分数字资产平台使用了一种错误的处理链状态的方式——在tipset的每个块上调用ChainGetBlockMessages，然后在这些消息上调用StateGetReceipt。
+而当StateGetReceipt被调用在两个相似的消息上（其中一个被执行，另一个被跳过），它将提供相同的结果给人，这就会导致给人一种两种消息都被执行的错觉。</p>
+</blockquote>
+<p>使用中首先遇到的2个问题</p>
+<ol>
+<li>每次cli操作都要输入passphrase</li>
+<li>jsonrpc错误后立即终止进程</li>
+</ol>
+<p>项目维护人解释到，forest执行了严格的安全规范，高安全等级对应用的要去使然。其意已表明filecoin的开发策略是多角度保证其目标。</p>
+<p>其中的jsonrpc错误后立即终止进程要求，为我提交的wallet list带来的修改会导致大量重构埋下了伏笔。</p>
+<h2 id="liu-cheng-1-daemonde-qi-dong-liu-cheng">流程1，daemon的启动流程</h2>
 <ul>
 <li>start
 <ul>
@@ -262,16 +215,64 @@
 <li>rpc</li>
 <li>sync: chainMuxer</li>
 </ul>
-<h5 id="bad-block-check">bad_block check</h5>
-<pre data-lang="sh" style="background-color:#f9f9f9;color:#111111;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#c82728;">❯</span><span style="color:#4271ae;"> ./target/release/forest</span><span style="color:#f07219;"> --import-snapshot</span><span style="color:#4271ae;"> ./lotus_cali_snapshot_2022_07_01_high_1086060.car</span><span>
-</span><span style="color:#c82728;">WARN</span><span style="color:#4271ae;">  forest::cli </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> No configurations found, using defaults.</span><span>
-</span><span style="color:#c82728;">INFO</span><span style="color:#4271ae;">  forest::daemon </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Starting Forest daemon, version v0.2.2/alpha/2777962b</span><span>
-</span><span style="color:#c82728;">INFO</span><span style="color:#4271ae;">  forest_libp2p::service </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Recovered libp2p keypair from </span><span style="color:#839c00;">&quot;/root/.local/share/forest/libp2p/keypair&quot;</span><span>
-</span><span style="color:#c82728;">Enter</span><span style="color:#4271ae;"> the keystore passphrase:</span><span>
-</span><span style="color:#c82728;">INFO</span><span style="color:#4271ae;">  forest::daemon         </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Prometheus server started at 127.0.0.1:6116</span><span>
-</span><span style="color:#c82728;">INFO</span><span style="color:#4271ae;">  forest::daemon         </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Admin token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4</span><span>
-</span><span style="color:#c82728;">INFO</span><span style="color:#4271ae;">  genesis                </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Initialized genesis: BlockHeader: Cid(bafy2bzacecnamqgqmifpluoeldx7zzglxcljo6oja4vrmtj7432rphldpdmm2</span><span>)</span><span>
-</span><span style="color:#c82728;">INFO</span><span style="color:#4271ae;">  forest::daemon         </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Using network :: testnetnet</span><span>
+<h2 id="liu-cheng-2-cliqi-dong-liu-cheng-wallet-zi-ming-ling-de-liu-cheng">流程2，cli启动流程，wallet 子命令的流程</h2>
+<ul>
+<li>解析参数</li>
+<li>构造jsonrpc参数</li>
+<li>jsonrpc</li>
+<li>具体的api</li>
+</ul>
+<pre style="background-color:#f9f9f9;color:#111111;"><code><span>&gt; forest [wallet list | state lookup]</span><span>
+</span><span>
+</span><span>解析参数        *_cmd.rs [wallet_cmd | state_cmd ]</span><span>
+</span><span>构造jsonrpc参数 *_opt.rs [wallet_opt | state_opt ]</span><span>
+</span><span>
+</span><span>call() -&gt; jsonrpc: </span><span>
+</span><span>  reqest object   { version, method, params, id }</span><span>
+</span><span>  response object { version, result, error, id }</span><span>
+</span><span>
+</span><span>key_mangement/wallet.rs</span><span>
+</span><span>  list_addr() // 从KeyStore或state里获取</span><span>
+</span></code></pre>
+<h2 id="qian-bao">钱包</h2>
+<p>我改动的部分是参照lotus</p>
+<ul>
+<li>list时能输出除Address外，还有此Address的Balance、Nonce、Default</li>
+<li>将原来的list调用组合了对KeyStore的获取和state中的Balance的获取，但因json API中输出类型都是一个String，暂且去掉了Nonce</li>
+<li>wallet_balance().await().map_err(xxx)中，xxx遇到err后会终止进程。所以其后的unwarp()或expect()不会被执行，只是将Result里的String解绑出来</li>
+<li>lotus里有独立jsonrpc module处理(&quot;github.com/filecoin-project/go-jsonrpc&quot;)，没有错误后终止进程</li>
+</ul>
+<h2 id="qian-bao-de-jian-hua-gong-neng">钱包的简化功能</h2>
+<ul>
+<li>挣钱：新区块的签名，转账时签名</li>
+<li>收钱：老区块的验签，接收转账时验签</li>
+</ul>
+<h3 id="qian-bao-gong-neng-de-yue-shu">钱包功能的约束</h3>
+<ul>
+<li>多设备：导入多出在设备之间</li>
+<li>多账户：增删改查多个账户</li>
+</ul>
+<h3 id="zhang-hu-de-ji-ben-jie-gou">账户的基本结构</h3>
+<ul>
+<li>私钥：分BLS聚合签和Secp256k1椭圆算法签名</li>
+<li>公钥：对外提供的标识</li>
+<li>地址：可视文本化的公钥</li>
+</ul>
+<h3 id="walletshu-ju-jie-gou">wallet数据结构</h3>
+<ul>
+<li>Wallet { keys&lt;Address, Key&gt;, keystore }</li>
+<li>Key { KeyInfo, public_key, address }</li>
+<li>KeyInfo { key_type, private_key }</li>
+<li>Address { Net(main/test), payload(ID/Secp256k1/Actor/BLS) }</li>
+<li>KeyStore { key_info&lt;addr, KeyInfo&gt;, persistence, encryption }
+<img src="../images/wallet.png" alt="key_mangement" /></li>
+</ul>
+<h2 id="huan-you-2ge-bugzai-fen-xi-zhong">还有2个bug在分析中</h2>
+<p>k块同步问题，还在分析中，抽空攒个大块时间处理</p>
+<ul>
+<li>输出错乱</li>
+</ul>
+<pre data-lang="sh" style="background-color:#f9f9f9;color:#111111;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#c82728;">INFO</span><span style="color:#4271ae;">  forest::daemon         </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Using network :: testnetnet</span><span>
 </span><span style="color:#c82728;">INFO</span><span style="color:#4271ae;">  genesis                </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Importing chain from snapshot</span><span>
 </span><span style="color:#c82728;">INFO</span><span style="color:#4271ae;">  genesis                </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Reading file...</span><span>
 </span><span style="color:#c82728;">Importing</span><span style="color:#4271ae;"> snapshot 3.34 GB / 3.91 GB [===============</span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;">--------</span><span>
@@ -279,17 +280,14 @@
 </span><span style="color:#c82728;">Importing</span><span style="color:#4271ae;"> snapshot 3.39 GB / 3.91 GB [=</span><span>
 </span><span style="color:#c82728;">Importing</span><span style="color:#4271ae;"> snapshot 3.</span><span>
 </span><span style="color:#c82728;">ImportingScanning</span><span style="color:#4271ae;"> blockchain 1079961 / 1086061 </span><span style="color:#8959a8;">[</span><span style="color:#4271ae;">============</span><span style="color:#8959a8;">]</span><span style="color:#4271ae;"> 99.44 % 116.94/s 52s  </span><span>
-</span><span style="color:#c82728;">INFO</span><span style="color:#4271ae;">  genesis                </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Accepting </span><span style="color:#8959a8;">[</span><span style="color:#4271ae;">Cid(bafy2bzaced3lqekadp5wwveksrfq3ulh43eq36gtgqqdsksfqfarb7aujncne), Cid(bafy2bzacedizgfupmw3loypx2dcczgaykmymzrnovupegthmwnbsslfsov4ua), Cid(bafy2bzaced4jfbzyol4qft4h4tkacco77z6aa2m4qkm573xanmyv3jdjier2m)</span><span style="color:#8959a8;">]</span><span style="color:#4271ae;"> as new head.</span><span>
-</span><span style="color:#c82728;">ERROR</span><span style="color:#4271ae;"> forest::cli            </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Error: Database too old. Download a snapshot from a trusted source and import with</span><span style="color:#f07219;"> --import-snapshot</span><span style="color:#3e999f;">=</span><span style="color:#8959a8;">[</span><span style="color:#4271ae;">file</span><span style="color:#8959a8;">]</span><span>
+</span><span style="color:#c82728;">genesis                </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Accepting [Cid</span><span>
 </span></code></pre>
-<pre data-lang="sh" style="background-color:#f9f9f9;color:#111111;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#c82728;">Starting</span><span style="color:#4271ae;"> Forest daemon</span><span>
-</span><span style="color:#c82728;">Recovered</span><span style="color:#4271ae;"> libp2p keypair from </span><span style="color:#839c00;">&quot;/root/.local/share/forest/libp2p/keypair&quot;</span><span>
-</span><span style="color:#c82728;">...</span><span>
-</span><span style="color:#c82728;">chain_muxer:</span><span style="color:#4271ae;"> Bootstrapping failed, re-evaluating the network head to retry the bootstrap. Error = TipsetRangeSyncer(Validation(</span><span style="color:#839c00;">&quot;Validation error: Consensus error: StateManager error: failed to find state tree bafy2bzacebbm4ympalhar75tlczmwpg3xkrh5txt56dluvam65it334zg5gke&quot;</span><span>))</span><span>
-</span><span>
-</span><span style="color:#c82728;">chain_muxer:</span><span style="color:#4271ae;"> Bootstrapping failed, 重复尝试并不停报错</span><span>
+<ul>
+<li>bad_block引起的循环不停的Bootstrapping</li>
+</ul>
+<pre data-lang="sh" style="background-color:#f9f9f9;color:#111111;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#c82728;">ERROR</span><span style="color:#4271ae;"> chain_sync::chain_muxer   </span><span style="color:#3e999f;">&gt;</span><span style="color:#4271ae;"> Bootstrapping failed, re-evaluating the network head to retry the bootstrap. Error = </span><span>
+</span><span> </span><span style="color:#c82728;">TipsetRangeSyncer</span><span style="color:#4271ae;">(Validation(</span><span style="color:#839c00;">&quot;Validation error: Consensus error: StateManager error: failed to find state tree xxx &quot;</span><span>))</span><span>
 </span></code></pre>
-<p>还在分析中，抽空攒个大块时间处理</p>
 
   </div>
 
