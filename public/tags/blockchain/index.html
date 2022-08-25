@@ -110,10 +110,10 @@
       
         去年了解过Filecoin，对其Go版的实现lotus运行和分析过，源于对IPFS的兴趣。
 今年学习零知识证明时，简单过了下ref_fvm，同时分析Filecoin的Rust版forest时，提交2个小PR，都是关于wallet的。顺带记录了些学习笔记如下。
-forestd的目的很明确，为了充分验证lotus对spec实现的完整性和缺陷，可能是21年的那场&amp;quot;双花&amp;quot;问题
+forest的目的很明确，为了充分验证lotus对spec实现的完整性和缺陷，可能是21年的那场&amp;quot;双花&amp;quot;问题
 
 简单来说，就是人们对链的检查方式，这会呈现出消息被处理了两次的样子，进而产生了误解。
-具体来说，就是部分数字资产平台使用了一种错误的处理链状态的方式——在tipset的每个块上调用ChainGetBlock…
+具体来说，就是部分数字资产平台使用了一种错误的处理链状态的方式——在tipset的每个块上调用ChainGetBlockM…
       <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;forest&#x2F;">read more</a>
     </div>
   </div>

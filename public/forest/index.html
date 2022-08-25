@@ -82,6 +82,8 @@
   
 
   
+    <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;rust-password-auth-translate&#x2F;">
+  
 
   
     <link rel="prerender"  href="https://jimluo.github.io/tags/blockchain/">
@@ -176,18 +178,18 @@
   <div>
     <p>去年了解过Filecoin，对其Go版的实现lotus运行和分析过，源于对IPFS的兴趣。</p>
 <p>今年学习零知识证明时，简单过了下ref_fvm，同时分析Filecoin的Rust版forest时，提交2个小PR，都是关于wallet的。顺带记录了些学习笔记如下。</p>
-<p>forestd的目的很明确，为了充分验证lotus对spec实现的完整性和缺陷，可能是21年的那场<a href="https://www.8btc.com/media/6610800">&quot;双花&quot;</a>问题</p>
+<p>forest的目的很明确，为了充分验证lotus对spec实现的完整性和缺陷，可能是21年的那场<a href="https://www.8btc.com/media/6610800">&quot;双花&quot;</a>问题</p>
 <blockquote>
-<p>简单来说，就是人们对链的检查方式，这会呈现出消息被处理了两次的样子，进而产生了误解。
-具体来说，就是部分数字资产平台使用了一种错误的处理链状态的方式——在tipset的每个块上调用ChainGetBlockMessages，然后在这些消息上调用StateGetReceipt。
-而当StateGetReceipt被调用在两个相似的消息上（其中一个被执行，另一个被跳过），它将提供相同的结果给人，这就会导致给人一种两种消息都被执行的错觉。</p>
+<p>简单来说，就是人们对链的检查方式，这会呈现出消息被处理了两次的样子，进而产生了误解。</p>
+<p>具体来说，就是部分数字资产平台使用了一种错误的处理链状态的方式——在tipset的每个块上调用ChainGetBlockMessages，然后在这些消息上调用StateGetReceipt。</p>
+<p>而当StateGetReceipt被调用在两个相似的消息上（其中一个被执行，另一个被跳过），它将提供相同的结果给人，这就会导致给人一种两种消息都被执行的错觉。</p>
 </blockquote>
 <p>使用中首先遇到的2个问题</p>
 <ol>
 <li>每次cli操作都要输入passphrase</li>
 <li>jsonrpc错误后立即终止进程</li>
 </ol>
-<p>项目维护人解释到，forest执行了严格的安全规范，高安全等级对应用的要去使然。其意已表明filecoin的开发策略是多角度保证其目标。</p>
+<p>项目维护人解释到，forest执行了严格的安全规范，高安全等级对应用的要求使然。其意已表明filecoin的开发策略是多角度保证其目标。</p>
 <p>其中的jsonrpc错误后立即终止进程要求，为我提交的wallet list带来的修改会导致大量重构埋下了伏笔。</p>
 <h2 id="liu-cheng-1-daemonde-qi-dong-liu-cheng">流程1，daemon的启动流程</h2>
 <ul>
@@ -304,6 +306,11 @@
       </div>
     
 
+    
+      <div class="link">
+        Next <br />
+        <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;rust-password-auth-translate&#x2F;">[翻译]Rust中的密码验证,从头开始,攻击和最佳实践</a>
+      </div>
     
 
   </div>
