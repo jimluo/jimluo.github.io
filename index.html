@@ -78,6 +78,8 @@
     
      
   
+    <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;rust-password-auth-translate&#x2F;" />
+  
     <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;forest&#x2F;" />
   
     <link rel="prerender" href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;ipfs&#x2F;" />
@@ -117,33 +119,45 @@
   
     
   <div class="post-preview">
+    <h3 class="post-title"><a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;rust-password-auth-translate&#x2F;">[翻译]Rust中的密码验证,从头开始,攻击和最佳实践</a></h3>
+    <small>
+      August 15, 2022 - 13973 words - 70 mins
+    </small>
+    <div class="summary">
+      
+        本文翻译自书Zero To Production In Rust作者的blog章节Rust中的密码验证
+机器翻译味道浓厚，如有不妥请麻告知。
+本文讲了支付系统中遇到的安全问题，层层深入问题，遇到的业务及安全知识逐步推开，再辅之以代码就单元测试，学起来不会就不会从入门到放弃了。
+我再其中学到安全知识如下
+
+密码认证， Basic Auth
+密码存储，（本文重点），加密密码及其攻击方式和预防方法
+密码网络交换，TLS
+认证流程， OAuth
+
+主要用到RustCrypto crate，其中sha3,base64,argon2
+以下正文开始
+
+本文是Rust中从零到生产的示例,一本关于Rust后端开…
+      <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;rust-password-auth-translate&#x2F;">read more</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="post-preview">
     <h3 class="post-title"><a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;forest&#x2F;">Forest的daemon、cli流程和钱包结构</a></h3>
     <small>
-      July 05, 2022 - 708 words - 4 mins
+      July 05, 2022 - 905 words - 5 mins
     </small>
     <div class="summary">
       
         去年了解过Filecoin，对其Go版的实现lotus运行和分析过，源于对IPFS的兴趣。
 今年学习零知识证明时，简单过了下ref_fvm，同时分析Filecoin的Rust版forest时，提交2个小PR，都是关于wallet的。顺带记录了些学习笔记如下。
-钱包的功能需求
+forest的目的很明确，为了充分验证lotus对spec实现的完整性和缺陷，可能是21年的那场&amp;quot;双花&amp;quot;问题
 
-挣钱：新区块的签名，转账时签名
-收钱：老区块的验签，接收转账时验签
-
-钱包功能的约束
-
-多设备：导入多出在设备之间
-多账户：增删改查多个账户
-
-账户的基本结构
-
-私钥：分BLS聚合签和Secp256k1椭圆算法签名
-公钥：对外提供的标识
-地址：可视文本化的公钥
-
-wallet结构
-
-Wallet { keys&amp;lt;Ad…
+简单来说，就是人们对链的检查方式，这会呈现出消息被处理了两次的样子，进而产生了误解。
+具体来说，就是部分数字资产平台使用了一种错误的处理链状态的方式——在tipset的每个块上调用ChainGetBlockM…
       <a href="https:&#x2F;&#x2F;jimluo.github.io&#x2F;forest&#x2F;">read more</a>
     </div>
   </div>
